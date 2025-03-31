@@ -1,6 +1,8 @@
 create database UniformDistributionDB;
 use UniformDistributionDB;
 
+
+-- Table Creation
 create table tbl_roles(
 role_id int not null primary key auto_increment,
 role_name varchar(40)
@@ -70,6 +72,8 @@ foreign key(item_id) references tbl_uniforms(item_id) on delete cascade on updat
 foreign key(colour_id) references tbl_colours(colour_id) on delete cascade on update cascade
 );
 
+
+-- Procedure Creation
 delimiter $$
 create procedure AddNewStaff(in fullnameInput varchar(40), in sexInput varchar(1), in roleInput int, in hoursInput int)
 begin
@@ -85,6 +89,8 @@ end $$
 
 delimiter ;
 
+
+-- Table Insertion
 insert into tbl_roles(role_name) values
 ('Doctors'),
 ('Nurses'),
@@ -139,3 +145,6 @@ insert into tbl_allocations(role_id, item_id, colour_id, quantity) values
 (5, 2, 5, 5), (5, 3, 5, 5), (5, 4, 5, 5), (5, 5, 5, 2), -- Porters
 (6, 6, 6, 5), (6, 7, 6, 5), (6, 8, 6, 5), (6, 5, 6, 1), -- Therapists
 (7, 9, 7, 5), (7, 10, null, 2), (7, 11, 7, 5), (7, 12, null, 2); -- Receptionists
+
+
+-- Test Cases
