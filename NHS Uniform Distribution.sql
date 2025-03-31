@@ -148,7 +148,7 @@ insert into tbl_allocations(role_id, item_id, colour_id, quantity) values
 
 
 -- Test Cases
-select * from tbl_roles; -- S01_C10 to C-10 and S02_C1 to C10
+select * from tbl_roles; -- For S01, S02, S03, & S04
 select * from tbl_colours;
 select * from tbl_sizes;
 select * from tbl_suppliers;
