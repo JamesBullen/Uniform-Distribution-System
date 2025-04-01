@@ -72,7 +72,7 @@ foreign key(item_id) references tbl_uniforms(item_id) on delete cascade on updat
 foreign key(colour_id) references tbl_colours(colour_id) on delete cascade on update cascade
 );
 
-call AddNewStaff('James Bullen', 'M', 1, 40);
+
 -- Procedure Creation
 delimiter $$
 create procedure AddNewStaff(in fullnameInput varchar(40), in sexInput varchar(1), in roleInput int, in hoursInput int)
@@ -165,3 +165,13 @@ select * from tbl_uniforms;
 select * from tbl_allocations;
 select * from tbl_staff;
 select * from tbl_orders;
+
+call AddNewStaff('James Bullen', 'M', 1, 40); -- For P01
+call AddNewStaff('Matilda Carboni', 'F', 6, 8);
+
+call LastAddedStaff(); -- For P02, & P05
+
+call PurchaseUniform(1, 1, 1, null, 'XS', 3, 0); -- For P03
+call PurchaseUniform(1, 1, 1, null, 'XS', 3, 1);
+select max(order_id) from tbl_orders;
+
