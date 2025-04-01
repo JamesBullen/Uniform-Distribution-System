@@ -166,11 +166,11 @@ select * from tbl_allocations;
 select * from tbl_staff;
 select * from tbl_orders;
 
-call AddNewStaff('James Bullen', 'M', 1, 40); -- For P01
+call AddNewStaff('James Bullen', 'M', 1, 40); -- For P01, & P04
 call AddNewStaff('Matilda Carboni', 'F', 6, 8);
 
 call LastAddedStaff(); -- For P02, & P05
 
-call PurchaseUniform(1, 1, 1, null, 'XS', 3, 0); -- For P03
+call PurchaseUniform(1, 1, 1, null, 'XS', 3, 0); -- For P03, P06, & P07
 call PurchaseUniform(2, 1, 1, null, 'XS', 3, 1);
 select * from tbl_orders where order_id = (select max(order_id) from tbl_orders);
