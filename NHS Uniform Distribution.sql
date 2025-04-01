@@ -193,3 +193,42 @@ call AddNewStaff('James Bullen', null, 1, 40);
 call AddNewStaff('James Bullen', 'M', null, 40);
 call AddNewStaff('James Bullen', 'M', 1, null);
 
+call PurchaseUniform(100, 1, 1, 1, 'XS', 3, 0); -- For I02
+call PurchaseUniform(1, 100, 1, 1, 'XS', 3, 0);
+call PurchaseUniform(1, 1, 100, 1, 'XS', 3, 0);
+call PurchaseUniform(1, 1, 1, 100, 'XS', 3, 0);
+call PurchaseUniform(1, 1, 1, 1, 'XXXS', 3, 0);
+call PurchaseUniform(1, 1, 1, 1, 'XS', 100, 0);
+call PurchaseUniform(1, 1, 1, 1, 'XS', 3, 100);
+
+call PurchaseUniform(-1, 1, 1, 1, 'XS', 3, 0);
+call PurchaseUniform(1, -1, 1, 1, 'XS', 3, 0);
+call PurchaseUniform(1, 1, -1, 1, 'XS', 3, 0);
+call PurchaseUniform(1, 1, 1, -1, 'XS', 3, 0);
+call PurchaseUniform(1, 1, 1, 1, 'XS', -1, 0);
+call PurchaseUniform(1, 1, 1, 1, 'XS', 3, -1);
+
+call PurchaseUniform(0, 1, 1, 1, 'XS', 3, 0);
+call PurchaseUniform(1, 0, 1, 1, 'XS', 3, 0);
+call PurchaseUniform(1, 1, 0, 1, 'XS', 3, 0);
+call PurchaseUniform(1, 1, 1, 0, 'XS', 3, 0);
+call PurchaseUniform(1, 1, 1, 1, 'XS', 0, 0);
+call PurchaseUniform(1, 1, 1, 1, 'XS', 3, 0);
+
+call PurchaseUniform('one', 1, 1, 1, 'XS', 3, 0);
+call PurchaseUniform(1, 'one', 1, 1, 'XS', 3, 0);
+call PurchaseUniform(1, 1, 'one', 1, 'XS', 3, 0);
+call PurchaseUniform(1, 1, 1, 'one', 'XS', 3, 0);
+call PurchaseUniform(1, 1, 1, 1, 3, 3, 0);
+call PurchaseUniform(1, 1, 1, 1, 'XS', 'three', 0);
+call PurchaseUniform(1, 1, 1, 1, 'XS', 3, 'zero');
+
+call PurchaseUniform(null, 1, 1, 1, 'XS', 3, 0);
+call PurchaseUniform(1, null, 1, 1, 'XS', 3, 0);
+call PurchaseUniform(1, 1, null, 1, 'XS', 3, 0);
+call PurchaseUniform(1, 1, 1, null, 'XS', 3, 0);
+call PurchaseUniform(1, 1, 1, 1, null, 3, 0);
+call PurchaseUniform(1, 1, 1, 1, 'XS', null, 0);
+call PurchaseUniform(1, 1, 1, 1, 'XS', 3, null);
+
+call PurchaseUniform(1, 1, 1, 1, 'Hi', 3, 0);
