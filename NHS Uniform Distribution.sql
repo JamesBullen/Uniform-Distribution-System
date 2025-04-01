@@ -82,7 +82,7 @@ insert into tbl_staff(fullname, sex, role_id, hours) values (fullnameInput, sexI
 select item_name, a.item_id, a.colour_id, sizes_id, ceiling(quantity*(hoursinput/40)) as quantity -- Returns needed uniform for interface to loop through to create orders
 from tbl_allocations as a
 join tbl_uniforms as u on a.item_id = u.item_id
-where a.role_id = 1 and (u.sex = sexInput or u.sex = 'U');
+where a.role_id = roleInput and (u.sex = sexInput or u.sex = 'U');
 end $$
 
 create procedure LastAddedStaff() -- May remove later and directly use the query from the interface
