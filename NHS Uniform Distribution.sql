@@ -93,7 +93,7 @@ end $$
 create procedure PurchaseUniform(in orderInput int, in staffInput int, in itemInput int, in colourInput int, in sizeInput varchar(3), in quantityInput int, in boughtInput bool)
 begin
 insert into tbl_orders(order_number, staff_id, item_id, colour_id, size, quantity, bought, order_date, reissue_date) values
-(orderInput, staffInput, itemInput, colourInput, sizeInput, quantityInput, boughtInput, cast(getdate() as date), if(boughtInput=1, dateadd(year, 2, cast(now() as date)), null));
+(orderInput, staffInput, itemInput, colourInput, sizeInput, quantityInput, boughtInput, cast(now() as date), if(boughtInput=1, date_add(cast(now() as date), interval 2 year), null));
 end $$
 
 delimiter ;
@@ -172,6 +172,5 @@ call AddNewStaff('Matilda Carboni', 'F', 6, 8);
 call LastAddedStaff(); -- For P02, & P05
 
 call PurchaseUniform(1, 1, 1, null, 'XS', 3, 0); -- For P03
-call PurchaseUniform(1, 1, 1, null, 'XS', 3, 1);
-select max(order_id) from tbl_orders;
-
+call PurchaseUniform(2, 1, 1, null, 'XS', 3, 1);
+select * from tbl_orders where order_id = (select max(order_id) from tbl_orders);
