@@ -72,13 +72,22 @@ foreign key(item_id) references tbl_uniforms(item_id) on delete cascade on updat
 foreign key(colour_id) references tbl_colours(colour_id) on delete cascade on update cascade
 );
 
-
+call AddNewStaff('James Bullen', 'M', 1, 40);
 -- Procedure Creation
 delimiter $$
 create procedure AddNewStaff(in fullnameInput varchar(40), in sexInput varchar(1), in roleInput int, in hoursInput int)
 begin
-insert into tbl_staff(fullname, sex, role_id, hours) values (fullnameInput, sexInput, roleInput, hoursInput);
--- to-do: create orders for uniform based off of role, sex, and hours worked
+insert into tbl_staff(fullname, sex, role_id, hours) values (fullnameInput, sexInput, roleInput, hoursInput); -- Adds new staff to table
+
+select item_name, a.item_id, a.colour_id, sizes_id, ceiling(quantity*(hoursinput/40)) as quantity -- Returns needed uniform for interface to loop through to create orders
+from tbl_allocations as a
+join tbl_uniforms as u on a.item_id = u.item_id
+where a.role_id = 1 and (u.sex = sexInput or u.sex = 'U');
+end $$
+
+create procedure LastAddedStaff() -- May remove later and directly use the query from the interface
+begin
+select max(staff_id) from tbl_staff;
 end $$
 
 create procedure PurchaseUniform(in orderInput int, in staffInput int, in itemInput int, in colourInput int, in sizeInput varchar(3), in quantityInput int, in boughtInput bool)
