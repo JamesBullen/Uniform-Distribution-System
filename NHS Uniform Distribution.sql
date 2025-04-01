@@ -93,7 +93,7 @@ end $$
 create procedure PurchaseUniform(in orderInput int, in staffInput int, in itemInput int, in colourInput int, in sizeInput varchar(3), in quantityInput int, in boughtInput bool)
 begin
 insert into tbl_orders(order_number, staff_id, item_id, colour_id, size, quantity, bought, order_date, reissue_date) values
-(orderInput, staffInput, itemId, colourInput, sizeInput, quantityInput, boughtInput, cast(getdate() as date), if(boughtInput=1, dateadd(year, 2, cast(getdate() as date)), null));
+(orderInput, staffInput, itemInput, colourInput, sizeInput, quantityInput, boughtInput, cast(getdate() as date), if(boughtInput=1, dateadd(year, 2, cast(now() as date)), null));
 end $$
 
 delimiter ;
