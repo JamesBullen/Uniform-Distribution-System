@@ -175,10 +175,14 @@ call PurchaseUniform(1, 1, 1, null, 'XS', 3, 0); -- For P03, P06, & P07
 call PurchaseUniform(2, 1, 1, null, 'XS', 3, 1);
 select * from tbl_orders where order_id = (select max(order_id) from tbl_orders);
 
-call AddNewStaff('Mister James Robert Bullen of Watford, son of Mister Alistair Michael Bullen of Banham', 'M', 1, 40); -- I01
+call AddNewStaff('Mister James Robert Bullen of Watford, son of Mister Alistair Michael Bullen of Banham', 'M', 1, 40); -- For I01
 call AddNewStaff('James Bullen', 'Male', 1, 40);
 call AddNewStaff('James Bullen', 'M', 100, 40);
 call AddNewStaff('James Bullen', 'M', 1, 400);
+call AddNewStaff('James Bullen', 'M', -1, 40);
+call AddNewStaff('James Bullen', 'M', 1, -1);
+call AddNewStaff('James Bullen', 'M', 0, 40);
+call AddNewStaff('James Bullen', 'M', 1, 0);
 call AddNewStaff(10, 'M', 1, 40);
 call AddNewStaff('James Bullen', 10, 1, 40);
 call AddNewStaff('James Bullen', 'M', 'one', 40);
@@ -188,3 +192,4 @@ call AddNewStaff(null, 'M', 1, '40');
 call AddNewStaff('James Bullen', null, 1, 40);
 call AddNewStaff('James Bullen', 'M', null, 40);
 call AddNewStaff('James Bullen', 'M', 1, null);
+
