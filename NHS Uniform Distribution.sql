@@ -99,8 +99,9 @@ insert into tbl_orders(order_number, staff_id, item_id, colour_id, size, quantit
 (orderInput, staffInput, itemInput, colourInput, sizeInput, quantityInput, boughtInput, cast(now() as date), if(boughtInput=0, date_add(cast(now() as date), interval 2 year), null));
 end $$
 
-create procedure AvaiableReissues() -- Shows uniforms available for reissues
+create procedure AvaiableReissues() -- Shows uniforms available for reissues, may also remove as may be more efficient to replace id's with there values in the interface rather than joining tables
 begin
+select fullname, item_name, colour, size, reissue_date from tbl_orders where reissue_date >= cast(now() as date);
 end $$
 delimiter ;
 
