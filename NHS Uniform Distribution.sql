@@ -1,5 +1,5 @@
-create database UniformDistributionDB;
-use UniformDistributionDB;
+create database Uniform_Distribution_DB;
+use Uniform_Distribution_DB;
 
 
 -- Table Creation
