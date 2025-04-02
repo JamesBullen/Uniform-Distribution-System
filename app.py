@@ -1,12 +1,14 @@
 import sys
 from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QTableWidget, QTabWidget, QVBoxLayout, QLineEdit, QLabel, QPushButton, QCheckBox, QMessageBox
 from PyQt6.QtCore import QSize
+from PyQt6.QtGui import QIcon
 from database import open_connection
 
 # Sets up the main window
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.setWindowIcon(QIcon("assets/favicon.png"))
         self.setWindowTitle("Uniform Distribution System")
         mainWidget = QWidget()
         layout = QVBoxLayout(mainWidget)
