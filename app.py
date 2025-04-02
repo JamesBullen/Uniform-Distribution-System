@@ -2,7 +2,7 @@ import sys
 from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QTableWidget, QTabWidget, QVBoxLayout, QLineEdit, QLabel, QPushButton, QCheckBox, QMessageBox
 from PyQt6.QtCore import QSize
 from PyQt6.QtGui import QIcon
-from database import open_connection
+from database import openConnection, createPool
 
 # Sets up the main window
 class MainWindow(QMainWindow):
@@ -37,8 +37,10 @@ class TabsTest(QWidget):
 
         self.setLayout(layout)
 
-# Tries to connect to database
-if not open_connection():
+# Creates connection pool
+connectionPool = createPool()
+# Tests connection to database
+if not connectionPool:
     # Close program if can't connect
     sys.exit(1)
 

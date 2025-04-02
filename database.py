@@ -8,15 +8,31 @@ SERVER_HOST = os.getenv('SERVER_HOST')
 SERVER_USER = os.getenv('SERVER_USER')
 SERVER_PASSWORD = os.getenv('SERVER_PASSWORD')
 
-# Opens a connection to the database
-def open_connection():
+# Creates connection pool
+def createPool():
     try:
-        connection = mysql.connector.connect(
-            host = SERVER_HOST,
-            user = SERVER_USER,
-            password = SERVER_PASSWORD,
-            database = "Uniform_Distribution_DB"
-        )
+        config = {
+            'host' : SERVER_HOST,
+            'user' : SERVER_USER,
+            'password' : SERVER_PASSWORD,
+            'database' : "Uniform_Distribution_DB"
+        }
+        pool = mysql.connector.pooling.MySQLConnectionPool(pool_name = "pool", pool_size = 3, autocommit = True, **config)
+        return pool
+    except mysql.connector.Error as e:
+        print(f"Database connection error: {e}")
+        return None
+
+# Opens a connection to the database
+def openConnection():
+    try:
+        config = {
+            'host' : SERVER_HOST,
+            'user' : SERVER_USER,
+            'password' : SERVER_PASSWORD,
+            'database' : "Uniform_Distribution_DB"
+        }
+        connection = mysql.connector.connect(autocommit = True, **config)
         return connection
     except mysql.connector.Error as e:
         print(f"Database connection error: {e}")
