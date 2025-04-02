@@ -53,7 +53,8 @@ fullname varchar(40) not null,
 sex varchar(1) not null,
 role_id int not null,
 hours int not null,
-foreign key(role_id) references tbl_roles(role_id) on delete cascade on update cascade
+foreign key(role_id) references tbl_roles(role_id) on delete cascade on update cascade,
+check (hours >= 0)
 );
 
 create table tbl_orders(
@@ -69,7 +70,9 @@ order_date date not null,
 reissue_date date,
 constraint staff_id foreign key(staff_id) references tbl_staff(staff_id) on delete cascade on update cascade,
 foreign key(item_id) references tbl_uniforms(item_id) on delete cascade on update cascade,
-foreign key(colour_id) references tbl_colours(colour_id) on delete cascade on update cascade
+foreign key(colour_id) references tbl_colours(colour_id) on delete cascade on update cascade,
+check (order_number > 0),
+check (quantity > 0)
 );
 
 
@@ -95,7 +98,6 @@ begin
 insert into tbl_orders(order_number, staff_id, item_id, colour_id, size, quantity, bought, order_date, reissue_date) values
 (orderInput, staffInput, itemInput, colourInput, sizeInput, quantityInput, boughtInput, cast(now() as date), if(boughtInput=0, date_add(cast(now() as date), interval 2 year), null));
 end $$
-
 delimiter ;
 
 
@@ -200,21 +202,18 @@ call PurchaseUniform(1, 1, 1, 100, 'XS', 3, 0);
 call PurchaseUniform(1, 1, 1, 1, 'XXXS', 3, 0);
 call PurchaseUniform(1, 1, 1, 1, 'XS', 100, 0);
 call PurchaseUniform(1, 1, 1, 1, 'XS', 3, 100);
-
 call PurchaseUniform(-1, 1, 1, 1, 'XS', 3, 0);
 call PurchaseUniform(1, -1, 1, 1, 'XS', 3, 0);
 call PurchaseUniform(1, 1, -1, 1, 'XS', 3, 0);
 call PurchaseUniform(1, 1, 1, -1, 'XS', 3, 0);
 call PurchaseUniform(1, 1, 1, 1, 'XS', -1, 0);
 call PurchaseUniform(1, 1, 1, 1, 'XS', 3, -1);
-
 call PurchaseUniform(0, 1, 1, 1, 'XS', 3, 0);
 call PurchaseUniform(1, 0, 1, 1, 'XS', 3, 0);
 call PurchaseUniform(1, 1, 0, 1, 'XS', 3, 0);
 call PurchaseUniform(1, 1, 1, 0, 'XS', 3, 0);
 call PurchaseUniform(1, 1, 1, 1, 'XS', 0, 0);
 call PurchaseUniform(1, 1, 1, 1, 'XS', 3, 0);
-
 call PurchaseUniform('one', 1, 1, 1, 'XS', 3, 0);
 call PurchaseUniform(1, 'one', 1, 1, 'XS', 3, 0);
 call PurchaseUniform(1, 1, 'one', 1, 'XS', 3, 0);
@@ -222,7 +221,6 @@ call PurchaseUniform(1, 1, 1, 'one', 'XS', 3, 0);
 call PurchaseUniform(1, 1, 1, 1, 3, 3, 0);
 call PurchaseUniform(1, 1, 1, 1, 'XS', 'three', 0);
 call PurchaseUniform(1, 1, 1, 1, 'XS', 3, 'zero');
-
 call PurchaseUniform(null, 1, 1, 1, 'XS', 3, 0);
 call PurchaseUniform(1, null, 1, 1, 'XS', 3, 0);
 call PurchaseUniform(1, 1, null, 1, 'XS', 3, 0);
@@ -230,5 +228,4 @@ call PurchaseUniform(1, 1, 1, null, 'XS', 3, 0);
 call PurchaseUniform(1, 1, 1, 1, null, 3, 0);
 call PurchaseUniform(1, 1, 1, 1, 'XS', null, 0);
 call PurchaseUniform(1, 1, 1, 1, 'XS', 3, null);
-
 call PurchaseUniform(1, 1, 1, 1, 'Hi', 3, 0);
