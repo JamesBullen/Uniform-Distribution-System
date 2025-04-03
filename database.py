@@ -1,5 +1,5 @@
-import mysql.connector
 import os
+from mysql.connector import connect, pooling, Error
 from dotenv import load_dotenv
 
 # Loads sensitive data from .env
@@ -17,13 +17,13 @@ def createPool():
             'password' : SERVER_PASSWORD,
             'database' : "Uniform_Distribution_DB"
         }
-        pool = mysql.connector.pooling.MySQLConnectionPool(pool_name = "pool", pool_size = 3, autocommit = True, **config)
+        pool = pooling.MySQLConnectionPool(pool_name = "pool", pool_size = 3, autocommit = True, **config)
         return pool
-    except mysql.connector.Error as e:
+    except Error as e:
         print(f"Database connection error: {e}")
         return None
 
-# Opens a connection to the database
+# Opens a connection to the database, will keep for later evalution test of how pooling effects performance
 def openConnection():
     try:
         config = {
@@ -32,8 +32,9 @@ def openConnection():
             'password' : SERVER_PASSWORD,
             'database' : "Uniform_Distribution_DB"
         }
-        connection = mysql.connector.connect(autocommit = True, **config)
+        connection = connect(autocommit = True, **config)
         return connection
-    except mysql.connector.Error as e:
+    except Error as e:
         print(f"Database connection error: {e}")
         return None
+    
