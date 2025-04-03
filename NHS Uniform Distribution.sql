@@ -101,7 +101,7 @@ end $$
 
 create procedure AvaiableReissues() -- Shows uniforms available for reissues, may also remove as may be more efficient to replace id's with there values in the interface rather than joining tables
 begin
-select fullname, item_name, colour, size, reissue_date from tbl_orders where reissue_date >= cast(now() as date);
+select fullname as 'Fullname', item_name as 'Uniform', colour as 'Colour', size as 'Size', reissue_date as 'Reissue Date' from tbl_orders where reissue_date >= cast(now() as date);
 end $$
 delimiter ;
 
