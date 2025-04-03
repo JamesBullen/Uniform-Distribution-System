@@ -38,3 +38,20 @@ def openConnection():
         print(f"Database connection error: {e}")
         return None
     
+# Gets all data from a table
+def extractTable(connection, table):
+    try:
+        # Open cursor and runs fetch query
+        cursor = connection.cursor()
+        query = f"SELECT * FROM {table}"
+        cursor.execute(query)
+        result = cursor.fetchall()
+
+        # Close cursor and return connection to pool
+        cursor.close()
+        connection.close()
+
+        return result
+    except Error as e:
+        print(f"Database connection error: {e}")
+        return None
