@@ -88,7 +88,7 @@ join tbl_uniforms as u on a.item_id = u.item_id
 where a.role_id = roleInput and (u.sex = sexInput or u.sex = 'U');
 end $$
 
-create procedure LastAddedStaff() -- May remove later and directly use the query from the interface
+create procedure LastAddedStaff() -- May remove later and directly use the query from the interface. Maybe I could just union this to PurchaseUniform if there's no colour column conflict this way
 begin
 select max(staff_id) from tbl_staff;
 end $$
