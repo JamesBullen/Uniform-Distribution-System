@@ -49,16 +49,14 @@ def extractTable(pool, table):
         cursor.execute(query)
         result = cursor.fetchall()
 
+        # Gets headers for columns
+        headers = [i[0] for i in cursor.description]
+
         # Close cursor and return connection to pool
         cursor.close()
         connection.close()
 
-        # For debugging/testing
-        print(result)
-        for r in result:
-            print(r)
-
-        return result
+        return result, headers
     except Error as e:
         print(f"Database connection error: {e}")
         return None
