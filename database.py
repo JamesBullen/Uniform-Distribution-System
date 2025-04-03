@@ -39,8 +39,10 @@ def openConnection():
         return None
     
 # Gets all data from a table
-def extractTable(connection, table):
+def extractTable(pool, table):
     try:
+        # Connects to pool
+        connection = pool.get_connection()
         # Open cursor and runs fetch query
         cursor = connection.cursor()
         query = f"SELECT * FROM {table}"
@@ -50,6 +52,11 @@ def extractTable(connection, table):
         # Close cursor and return connection to pool
         cursor.close()
         connection.close()
+
+        # For debugging/testing
+        print(result)
+        for r in result:
+            print(r)
 
         return result
     except Error as e:
