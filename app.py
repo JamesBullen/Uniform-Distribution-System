@@ -2,7 +2,8 @@ import sys
 from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QTableWidget, QTabWidget, QVBoxLayout, QLineEdit, QLabel, QPushButton, QCheckBox, QMessageBox
 from PyQt6.QtCore import QSize
 from PyQt6.QtGui import QIcon
-from database import openConnection, createPool
+from database import openConnection, createPool, extractTable
+from tabs import StaffTab
 
 # Sets up the main window
 class MainWindow(QMainWindow):
@@ -20,9 +21,13 @@ class MainWindow(QMainWindow):
         self.testtab2 = TabsTest('two')
         layout.addWidget(self.testtab2)
 
+        self.staffTab = StaffTab(connectionPool)
+        layout.addWidget(self.staffTab)
+
         tabs = QTabWidget()
         tabs.addTab(self.testtab,"Test Tab")
         tabs.addTab(self.testtab2,"Test Tab 2")
+        tabs.addTab(self.staffTab,"Staff")
         layout.addWidget(tabs)
 
         self.show()
@@ -44,7 +49,10 @@ if not connectionPool:
     # Close program if can't connect
     sys.exit(1)
 
+extractTable(connectionPool, 'tbl_staff')
+
 if __name__ == '__main__':
     app = QApplication([])
     window = MainWindow()
     sys.exit(app.exec())
+#! No code after here
