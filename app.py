@@ -16,17 +16,10 @@ class MainWindow(QMainWindow):
         mainWidget.setLayout(layout)
         self.setCentralWidget(mainWidget)
 
-        self.testtab = TabsTest('one')
-        layout.addWidget(self.testtab)
-        self.testtab2 = TabsTest('two')
-        layout.addWidget(self.testtab2)
-
         self.staffTab = StaffTab(connectionPool)
         layout.addWidget(self.staffTab)
 
         tabs = QTabWidget()
-        tabs.addTab(self.testtab,"Test Tab")
-        tabs.addTab(self.testtab2,"Test Tab 2")
         tabs.addTab(self.staffTab,"Staff")
         layout.addWidget(tabs)
 
