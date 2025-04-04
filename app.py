@@ -16,9 +16,14 @@ class MainWindow(QMainWindow):
         mainWidget.setLayout(layout)
         self.setCentralWidget(mainWidget)
 
+        # Staff tab
         self.staffTab = StaffTab(connectionPool)
         layout.addWidget(self.staffTab)
 
+        # Orders tab
+        # Reports tab
+
+        # Adds tabs together
         tabs = QTabWidget()
         tabs.addTab(self.staffTab,"Staff")
         layout.addWidget(tabs)
