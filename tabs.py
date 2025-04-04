@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QTableWidget, QVBoxLayout, QHBoxLayout, QLineEdit, QLabel, QPushButton, QComboBox, QMessageBox, QErrorMessage, QFrame
+from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QTableWidget, QGridLayout, QVBoxLayout, QHBoxLayout, QLineEdit, QLabel, QPushButton, QComboBox, QMessageBox, QErrorMessage, QFrame
 from database import extractTable
 from mysql.connector import connect, pooling, Error
 
@@ -35,27 +35,25 @@ class StaffTab(QWidget):
         layout.addWidget(self.table)
 
         # Staff input form
-        self.staffLayout = QVBoxLayout()
+        self.staffLayout = QGridLayout()
         self.staffFrame = QFrame()
-        nameRow = QHBoxLayout()
-        sexRow = QHBoxLayout()
-        roleRow = QHBoxLayout()
-        hoursRow = QHBoxLayout()
+        labelCol = QVBoxLayout()
+        inputCol = QVBoxLayout()
         staffButtons = QHBoxLayout()
         # Name row
         self.nameLabel = QLabel(self)
         self.nameLabel.setText('Fullname')
         self.nameInput = QLineEdit(self)
-        nameRow.addWidget(self.nameLabel)
-        nameRow.addWidget(self.nameInput)
+        labelCol.addWidget(self.nameLabel)
+        inputCol.addWidget(self.nameInput)
         # Sex row
         self.sexLabel = QLabel(self)
         self.sexLabel.setText('Sex')
         self.sexInput = QComboBox(self)
         self.sexInput.addItems(['Male','Female'])
         self.sexInput.setCurrentIndex(-1)
-        sexRow.addWidget(self.sexLabel)
-        sexRow.addWidget(self.sexInput)
+        labelCol.addWidget(self.sexLabel)
+        inputCol.addWidget(self.sexInput)
         # Role row
         self.roleLabel = QLabel(self)
         self.roleLabel.setText('Role')
@@ -63,14 +61,14 @@ class StaffTab(QWidget):
         roleResults = extractTable(self.pool, 'tbl_roles')[0]
         self.roleInput.addItems([i[1] for i in roleResults])
         self.roleInput.setCurrentIndex(-1)
-        roleRow.addWidget(self.roleLabel)
-        roleRow.addWidget(self.roleInput)
+        labelCol.addWidget(self.roleLabel)
+        inputCol.addWidget(self.roleInput)
         # Hours row
         self.hoursLabel = QLabel(self)
         self.hoursLabel.setText('Hours')
         self.hoursInput = QLineEdit(self)
-        hoursRow.addWidget(self.hoursLabel)
-        hoursRow.addWidget(self.hoursInput)
+        labelCol.addWidget(self.hoursLabel)
+        inputCol.addWidget(self.hoursInput)
         # Buttons
         self.staffOkButton = QPushButton('Ok')
         self.staffOkButton.clicked.connect(self.staffOk)
@@ -79,11 +77,9 @@ class StaffTab(QWidget):
         staffButtons.addWidget(self.staffOkButton)
         staffButtons.addWidget(self.staffCancelButton)
 
-        self.staffLayout.addLayout(nameRow)
-        self.staffLayout.addLayout(sexRow)
-        self.staffLayout.addLayout(roleRow)
-        self.staffLayout.addLayout(hoursRow)
-        self.staffLayout.addLayout(staffButtons)
+        self.staffLayout.addLayout(labelCol, 0, 0)
+        self.staffLayout.addLayout(inputCol, 0, 1)
+        self.staffLayout.addLayout(staffButtons, 1, 0, 1, 2)
         self.staffFrame.setLayout(self.staffLayout)
         #layout.addWidget(self.staffFrame)
 
@@ -104,8 +100,7 @@ class StaffTab(QWidget):
         try:
             staffFields = [self.nameInput.text(), self.sexInput.currentText()[0], self.roleInput.currentIndex()+1, self.hoursInput.text()]
         except:
-            errorMessage = QErrorMessage()
-            errorMessage.showMessage("All fields must be filled correctly")
+            QMessageBox.warning(self, 'Validtion', "All fields must be filled correctly")
             return
 
         try:
