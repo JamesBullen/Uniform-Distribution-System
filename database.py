@@ -59,5 +59,5 @@ def extractTable(pool, table):
 
         return result, headers
     except Error as e:
-        print(f"Database connection error: {e}")
+        print(f"Query error: {e}")
         return None
