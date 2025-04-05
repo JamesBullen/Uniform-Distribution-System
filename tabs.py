@@ -1,23 +1,37 @@
-from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QTableWidget, QGridLayout, QVBoxLayout, QHBoxLayout, QLineEdit, QLabel, QPushButton, QComboBox, QMessageBox, QErrorMessage, QFrame
-from database import extractTable
+from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QTableWidget, QTableWidgetItem, QGridLayout, QVBoxLayout, QHBoxLayout, QLineEdit, QLabel, QPushButton, QComboBox, QMessageBox, QErrorMessage, QFrame
+from database import extractTable, staffInfoProcedure, newStaffProcedure
 from mysql.connector import connect, pooling, Error
 
 class Tables(QWidget):
-    def __init__(self, headers):
+    def __init__(self, procedure, args):
         super().__init__()
         layout = QVBoxLayout()
 
+        results = self.getData(procedure, args)
         self.table = QTableWidget()
-        self.table.setColumnCount(len(headers))
-        self.table.setHorizontalHeaderLabels(headers)
+        self.table.setColumnCount(len(results[1]))
+        self.table.setHorizontalHeaderLabels(results[1])
+        self.updateTable(results[0])
 
         layout.addWidget(self.table)
         self.setLayout(layout)
+    
+    def getData(self, procedure, args):
+        results =  procedure(args)
+        return results
+    
+    def updateTable(self, rows):
+        # O(n^2), find better solution in future
+        for r in rows:
+            rowPosition = self.table.rowCount()
+            self.table.insertRow(rowPosition)
+
+            for i in range(0, len(r)):
+                self.table.setItem(rowPosition, i, QTableWidgetItem(str(r[i])))
 
 class StaffTab(QWidget):
-    def __init__(self, pool):
+    def __init__(self):
         super().__init__()
-        self.pool = pool
         layout = QVBoxLayout()
 
         # Buttons
@@ -30,8 +44,7 @@ class StaffTab(QWidget):
         layout.addLayout(tableButtons)
         
         # Table
-        results = extractTable(self.pool, 'tbl_staff') # will use different function later
-        self.table = Tables(results[1])
+        self.table = Tables(staffInfoProcedure, 1)
         layout.addWidget(self.table)
 
         #* Staff input form
@@ -58,7 +71,7 @@ class StaffTab(QWidget):
         self.roleLabel = QLabel(self)
         self.roleLabel.setText('Role')
         self.roleInput = QComboBox(self)
-        roleResults = extractTable(self.pool, 'tbl_roles')[0]
+        roleResults = extractTable('tbl_roles')[0]
         self.roleInput.addItems([i[1] for i in roleResults])
         self.roleInput.setCurrentIndex(-1)
         labelCol.addWidget(self.roleLabel)
@@ -83,7 +96,7 @@ class StaffTab(QWidget):
         self.uniformCol = QVBoxLayout()
         self.sizeCol = QVBoxLayout()
         self.uniformButtons = QHBoxLayout()
-        self.sizesResults = extractTable(self.pool, 'tbl_sizes')[0]
+        self.sizesResults = extractTable('tbl_sizes')[0]
         # Button options
         self.finishButton = QPushButton('Finish')
         self.finishButton.clicked.connect(lambda: print('test'))
@@ -115,25 +128,8 @@ class StaffTab(QWidget):
         except:
             QMessageBox.warning(self, 'Missing values', "All fields must be filled correctly")
             return
-
-        try:
-            # Connect to pool
-            connection = self.pool.get_connection()
-            # Open cursor and runs fetch query
-            cursor = connection.cursor()
-            query = "call AddNewStaff(%s, %s, %s, %s)"
-            cursor.execute(query, staffFields)
-            result = cursor.fetchall()
-
-            # Close cursor and return connection to pool
-            cursor.close()
-            connection.close()
-        except Error as e:
-            print(f"Error: {e}")
-            errorMessage = QErrorMessage()
-            errorMessage.showMessage(f"Error: {e}")
-            return
         
+        result = newStaffProcedure(staffFields)
         self.staffFrame.hide()
         self.generateUniformForm(result)
     
@@ -164,7 +160,6 @@ class StaffTab(QWidget):
             self.uniformCol.addWidget(labelDict[i])
 
             sizeOptions = self.sizesResults[uniforms[i][3]][1]
-            print(sizeOptions)
 
             inputDict[i] = QComboBox()
             inputDict[i].addItems(sizeOptions.split(','))
@@ -174,13 +169,12 @@ class StaffTab(QWidget):
 
     def finishAction(self):
         self.clearStaffForm()
+        self.table.updateTable()
+
 
     def backAction(self):
         self.uniformFrame.hide()
         self.openStaffForm()
-    
-    def updateTable(self):
-        ...
 
 class OrdersTab(QWidget):
     def __init__(self, text):
