@@ -24,7 +24,7 @@ class StaffTab(QWidget):
         tableButtons = QHBoxLayout()
         # Add new staffer
         self.newStaffButton = QPushButton('Add new Staffer', self)
-        self.newStaffButton.clicked.connect(self.addStaff)
+        self.newStaffButton.clicked.connect(self.openStaffForm)
         tableButtons.addWidget(self.newStaffButton)
 
         layout.addLayout(tableButtons)
@@ -34,7 +34,7 @@ class StaffTab(QWidget):
         self.table = Tables(results[1])
         layout.addWidget(self.table)
 
-        # Staff input form
+        #* Staff input form
         self.staffLayout = QGridLayout()
         self.staffFrame = QFrame()
         labelCol = QVBoxLayout()
@@ -70,37 +70,50 @@ class StaffTab(QWidget):
         labelCol.addWidget(self.hoursLabel)
         inputCol.addWidget(self.hoursInput)
         # Buttons
-        self.staffOkButton = QPushButton('Ok')
-        self.staffOkButton.clicked.connect(self.staffOk)
-        self.staffCancelButton = QPushButton('Cancel')
-        self.staffCancelButton.clicked.connect(self.staffCancel)
-        staffButtons.addWidget(self.staffOkButton)
-        staffButtons.addWidget(self.staffCancelButton)
+        self.nextButton = QPushButton('Next')
+        self.nextButton.clicked.connect(self.nextAction)
+        self.cancelButton = QPushButton('Cancel')
+        self.cancelButton.clicked.connect(self.cancelAction)
+        staffButtons.addWidget(self.nextButton)
+        staffButtons.addWidget(self.cancelButton)
+
+        #* Size form
+        self.uniformLayout = QGridLayout()
+        self.uniformFrame = QFrame()
+        self.uniformCol = QVBoxLayout()
+        self.sizeCol = QVBoxLayout()
+        self.uniformButtons = QHBoxLayout()
+        self.sizesResults = extractTable(self.pool, 'tbl_sizes')[0]
+        # Button options
+        self.finishButton = QPushButton('Finish')
+        self.finishButton.clicked.connect(lambda: print('test'))
+        self.backButton = QPushButton('Back')
+        self.backButton.clicked.connect(self.backAction)
+        self.uniformButtons.addWidget(self.finishButton)
+        self.uniformButtons.addWidget(self.backButton)
+        # Add everything to layout
+        self.uniformLayout.addLayout(self.uniformCol, 0, 0)
+        self.uniformLayout.addLayout(self.sizeCol, 0, 1)
+        self.uniformLayout.addLayout(self.uniformButtons, 1, 0, 1, 2)
+        self.uniformFrame.setLayout(self.uniformLayout)
 
         self.staffLayout.addLayout(labelCol, 0, 0)
         self.staffLayout.addLayout(inputCol, 0, 1)
         self.staffLayout.addLayout(staffButtons, 1, 0, 1, 2)
         self.staffFrame.setLayout(self.staffLayout)
-        #layout.addWidget(self.staffFrame)
 
         self.setLayout(layout)
 
-    def addStaff(self):
-        # Clears form
-        self.nameInput.clear()
-        self.sexInput.setCurrentIndex(-1)
-        self.roleInput.setCurrentIndex(-1)
-        self.hoursInput.clear()
-
+    def openStaffForm(self):
         # Changes display
         self.staffFrame.show()
     
-    def staffOk(self):
+    def nextAction(self):
         # validation checks will go hear, will see about a switch case for different validation errors
         try:
             staffFields = [self.nameInput.text(), self.sexInput.currentText()[0], self.roleInput.currentIndex()+1, self.hoursInput.text()]
         except:
-            QMessageBox.warning(self, 'Validtion', "All fields must be filled correctly")
+            QMessageBox.warning(self, 'Missing values', "All fields must be filled correctly")
             return
 
         try:
@@ -111,6 +124,10 @@ class StaffTab(QWidget):
             query = "call AddNewStaff(%s, %s, %s, %s)"
             cursor.execute(query, staffFields)
             result = cursor.fetchall()
+
+            # Close cursor and return connection to pool
+            cursor.close()
+            connection.close()
         except Error as e:
             print(f"Error: {e}")
             errorMessage = QErrorMessage()
@@ -118,12 +135,51 @@ class StaffTab(QWidget):
             return
         
         self.staffFrame.hide()
-        self.generateUniformForm()
+        self.generateUniformForm(result)
     
-    def staffCancel(self):
+    def cancelAction(self):
         self.staffFrame.hide()
+        self.clearStaffForm()
 
-    def generateUniformForm():
+    def clearStaffForm(self):
+        self.nameInput.clear()
+        self.sexInput.setCurrentIndex(-1)
+        self.roleInput.setCurrentIndex(-1)
+        self.hoursInput.clear()
+
+    def generateUniformForm(self, uniforms):
+        if self.uniformCol.children():
+            print('has children')
+        else:
+            print('no children')
+        
+        # Setup for loop
+        labelDict = {1:None, 2:None, 3:None, 4:None}
+        inputDict = {1:None, 2:None, 3:None, 4:None}
+
+        # Dynamically creates size fields for each uniform type
+        for i in range(0, len(uniforms)):
+            labelDict[i] = QLabel()
+            labelDict[i].setText(uniforms[i][0])
+            self.uniformCol.addWidget(labelDict[i])
+
+            sizeOptions = self.sizesResults[uniforms[i][3]][1]
+            print(sizeOptions)
+
+            inputDict[i] = QComboBox()
+            inputDict[i].addItems(sizeOptions.split(','))
+            self.sizeCol.addWidget(inputDict[i])
+
+        self.uniformFrame.show()
+
+    def finishAction(self):
+        self.clearStaffForm()
+
+    def backAction(self):
+        self.uniformFrame.hide()
+        self.openStaffForm()
+    
+    def updateTable(self):
         ...
 
 class OrdersTab(QWidget):
