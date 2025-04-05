@@ -40,10 +40,11 @@ def openConnection():
     
 # Gets all data from a table, to be used extract validation tables that may be updated for dropdowns
 # Parameterised queries can't be used for identifiers like table names, never use this function for anything with user inputs
-def extractTable(pool, table):
+def extractTable( table):
+    from app import getConnection
     try:
         # Connects to pool
-        connection = pool.get_connection()
+        connection = getConnection()
         # Open cursor and runs fetch query
         cursor = connection.cursor()
         query = f"SELECT * FROM {table}"
