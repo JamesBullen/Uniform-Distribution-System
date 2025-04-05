@@ -82,7 +82,7 @@ create procedure AddNewStaff(in fullnameInput varchar(40), in sexInput varchar(1
 begin
 insert into tbl_staff(fullname, sex, role_id, hours) values (fullnameInput, sexInput, roleInput, hoursInput); -- Adds new staff to table
 
-select item_name, a.item_id, a.colour_id, sizes_id, ceiling(quantity*(hoursinput/40)) as quantity -- Returns needed uniform for interface to loop through to create orders
+select item_name as 'Uniform', a.item_id, a.colour_id, sizes_id, ceiling(quantity*(hoursinput/40)) -- Returns needed uniform for interface to loop through to create orders
 from tbl_allocations as a
 join tbl_uniforms as u on a.item_id = u.item_id
 where a.role_id = roleInput and (u.sex = sexInput or u.sex = 'U');
@@ -101,20 +101,25 @@ end $$
 
 create procedure AvaiableReissues() -- Shows uniforms available for reissues, may also remove as may be more efficient to replace id's with there values in the interface rather than joining tables
 begin
-select fullname as 'Fullname', item_name as 'Uniform', colour as 'Colour', size as 'Size', reissue_date as 'Reissue Date' from tbl_orders where reissue_date >= cast(now() as date);
+select fullname as 'Full Name', item_name as 'Uniform', colour as 'Colour', size as 'Size', reissue_date as 'Reissue Date'
+from tbl_orders where reissue_date >= cast(now() as date);
+end $$
+
+create procedure StaffInfo(in rowsInput int) -- Returns only the relevant data when displayign staff in GUI
+begin
+select fullname as 'Full Name', role_id as 'Role', hours as 'Hours' from tbl_staff where staff_id >= rowsInput;
 end $$
 delimiter ;
 
-
 -- Table Insertion
 insert into tbl_roles(role_name) values
-('Doctors'),
-('Nurses'),
-('Health Care Assistants'),
+('Doctor'),
+('Nurse'),
+('Health Care Assistant'),
 ('Housekeeping'),
-('Porters'),
-('Therapists'),
-('Receptionists');
+('Porter'),
+('Therapist'),
+('Receptionist');
 
 insert into tbl_colours(colour) values
 ('blue'),
