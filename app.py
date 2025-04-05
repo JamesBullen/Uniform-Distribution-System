@@ -47,8 +47,6 @@ if not connectionPool:
     # Close program if can't connect
     sys.exit(1)
 
-extractTable(connectionPool, 'tbl_staff')
-
 if __name__ == '__main__':
     app = QApplication([])
     window = MainWindow()
