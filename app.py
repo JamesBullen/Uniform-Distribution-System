@@ -17,7 +17,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(mainWidget)
 
         # Staff tab
-        self.staffTab = StaffTab(connectionPool)
+        self.staffTab = StaffTab()
         layout.addWidget(self.staffTab)
 
         # Orders tab
@@ -46,6 +46,9 @@ connectionPool = createPool()
 if not connectionPool:
     # Close program if can't connect
     sys.exit(1)
+
+def getConnection():
+    return connectionPool.get_connection()
 
 if __name__ == '__main__':
     app = QApplication([])
