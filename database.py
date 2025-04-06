@@ -63,15 +63,14 @@ def extractTable( table):
         print(f"Query error: {e}")
         return None
     
-def staffInfoProcedure(rows):
+def callProcedure(query, args):
     from app import getConnection
     try:
-        # Connects to pool
+        # Connect to pool
         connection = getConnection()
         # Open cursor and runs fetch query
         cursor = connection.cursor()
-        query = """call StaffInfo(%s)"""
-        cursor.execute(query, (rows,))
+        cursor.execute(query, args if isinstance(args, list) else (args,))
         result = cursor.fetchall()
 
         # Gets headers for columns
@@ -82,26 +81,6 @@ def staffInfoProcedure(rows):
         connection.close()
 
         return result, headers
-    except Error as e:
-        print(f"Query error: {e}")
-        return None
-    
-def newStaffProcedure(fields):
-    from app import getConnection
-    try:
-        # Connect to pool
-        connection = getConnection()
-        # Open cursor and runs fetch query
-        cursor = connection.cursor()
-        query = "call AddNewStaff(%s, %s, %s, %s)"
-        cursor.execute(query, fields)
-        result = cursor.fetchall()
-
-        # Close cursor and return connection to pool
-        cursor.close()
-        connection.close()
-
-        return result
     except Error as e:
         print(f"Error: {e}")
         return

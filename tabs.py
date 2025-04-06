@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QTableWidget, QTableWidgetItem, QGridLayout, QVBoxLayout, QHBoxLayout, QLineEdit, QLabel, QPushButton, QComboBox, QMessageBox, QErrorMessage, QFrame
-from database import extractTable, staffInfoProcedure, newStaffProcedure
+from database import extractTable, callProcedure
 from mysql.connector import connect, pooling, Error
 
 class Tables(QWidget):
@@ -17,7 +17,7 @@ class Tables(QWidget):
         self.setLayout(layout)
     
     def getData(self, procedure, args):
-        results =  procedure(args)
+        results =  callProcedure(procedure, args)
         return results
     
     def updateTable(self, rows):
@@ -44,7 +44,7 @@ class StaffTab(QWidget):
         layout.addLayout(tableButtons)
         
         # Table
-        self.table = Tables(staffInfoProcedure, 1)
+        self.table = Tables("call StaffInfo(%s)", 1)
         layout.addWidget(self.table)
 
         #* Staff input form
@@ -129,9 +129,9 @@ class StaffTab(QWidget):
             QMessageBox.warning(self, 'Missing values', "All fields must be filled correctly")
             return
         
-        result = newStaffProcedure(staffFields)
+        result = callProcedure("call AddNewStaff(%s, %s, %s, %s)", staffFields)
         self.staffFrame.hide()
-        self.generateUniformForm(result)
+        self.generateUniformForm(result[0])
     
     def cancelAction(self):
         self.staffFrame.hide()
@@ -177,21 +177,15 @@ class StaffTab(QWidget):
         self.openStaffForm()
 
 class OrdersTab(QWidget):
-    def __init__(self, text):
+    def __init__(self):
         super().__init__()
         layout = QVBoxLayout()
-
-        self.label = QLabel(f"<h1>{text}</h1>")
-        layout.addWidget(self.label)
 
         self.setLayout(layout)
 
 class ReportsTab(QWidget):
-    def __init__(self, text):
+    def __init__(self):
         super().__init__()
         layout = QVBoxLayout()
-
-        self.label = QLabel(f"<h1>{text}</h1>")
-        layout.addWidget(self.label)
 
         self.setLayout(layout)
