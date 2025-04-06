@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QTableWidget, QT
 from PyQt6.QtCore import QSize
 from PyQt6.QtGui import QIcon
 from database import openConnection, createPool, extractTable
-from tabs import StaffTab
+from tabs import StaffTab, ReportsTab, OrdersTab
 
 # Sets up the main window
 class MainWindow(QMainWindow):
@@ -21,11 +21,18 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.staffTab)
 
         # Orders tab
+        self.ordersTab = OrdersTab()
+        layout.addWidget(self.ordersTab)
+
         # Reports tab
+        self.reportsTab = ReportsTab()
+        layout.addWidget(self.reportsTab)
 
         # Adds tabs together
         tabs = QTabWidget()
         tabs.addTab(self.staffTab,"Staff")
+        tabs.addTab(self.ordersTab,"Orders")
+        tabs.addTab(self.reportsTab,"Reports")
         layout.addWidget(tabs)
 
         self.show()
