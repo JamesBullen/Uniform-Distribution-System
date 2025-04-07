@@ -1,4 +1,5 @@
 import sys
+import staff, orders, reports
 from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QTableWidget, QTabWidget, QVBoxLayout, QLineEdit, QLabel, QPushButton, QCheckBox, QMessageBox
 from PyQt6.QtCore import QSize
 from PyQt6.QtGui import QIcon
@@ -19,15 +20,15 @@ class MainWindow(QMainWindow):
         loadValidtionTables()
 
         # Staff tab
-        self.staffTab = StaffTab()
+        self.staffTab = staff.StaffTab()
         layout.addWidget(self.staffTab)
 
         # Orders tab
-        self.ordersTab = OrdersTab()
+        self.ordersTab = orders.OrdersTab()
         layout.addWidget(self.ordersTab)
 
         # Reports tab
-        self.reportsTab = ReportsTab()
+        self.reportsTab = reports.ReportsTab()
         layout.addWidget(self.reportsTab)
 
         # Adds tabs together
