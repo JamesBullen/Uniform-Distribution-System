@@ -110,10 +110,11 @@ begin
 select fullname as 'Full Name', role_name as 'Role', hours as 'Hours'
 from tbl_staff as s
 join tbl_roles as r on s.role_id = r.role_id
-where staff_id >= rowsInput;
+where staff_id >= rowsInput
+order by staff_id;
 end $$
 delimiter ;
-call StaffInfo(1)
+
 -- Table Insertion
 insert into tbl_roles(role_name) values
 ('Doctor'),
