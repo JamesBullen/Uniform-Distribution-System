@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import QWidget, QGridLayout, QVBoxLayout, QHBoxLayout, QLineEdit, QLabel, QPushButton, QComboBox, QMessageBox, QFrame
 from database import getValidtionTable, callProcedure
-from tables import Tables
+from table import Table
 
 class StaffTab(QWidget):
     def __init__(self):
@@ -19,7 +19,7 @@ class StaffTab(QWidget):
         layout.addLayout(tableButtons)
         
         # Table
-        self.table = Tables("call StaffInfo(%s)", 1)
+        self.table = Table("call StaffInfo(%s)", 1)
         layout.addWidget(self.table)
 
         #* Staff input form

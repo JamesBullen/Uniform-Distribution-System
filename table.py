@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QWidget, QTableWidget, QTableWidgetItem, QVBoxLayout
 from database import callProcedure
 
-class Tables(QWidget):
+class Table(QWidget):
     def __init__(self, procedure, args):
         super().__init__()
         layout = QVBoxLayout()
