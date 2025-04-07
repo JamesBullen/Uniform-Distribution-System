@@ -1,6 +1,5 @@
 from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QTableWidget, QTableWidgetItem, QGridLayout, QVBoxLayout, QHBoxLayout, QLineEdit, QLabel, QPushButton, QComboBox, QMessageBox, QErrorMessage, QFrame
-from database import extractTable, callProcedure
-from mysql.connector import connect, pooling, Error
+from database import getValidtionTable, callProcedure
 
 class Tables(QWidget):
     def __init__(self, procedure, args):
@@ -71,7 +70,7 @@ class StaffTab(QWidget):
         self.roleLabel = QLabel(self)
         self.roleLabel.setText('Role')
         self.roleInput = QComboBox(self)
-        roleResults = extractTable('tbl_roles')[0]
+        roleResults = getValidtionTable('tbl_roles')
         self.roleInput.addItems([i[1] for i in roleResults])
         self.roleInput.setCurrentIndex(-1)
         labelCol.addWidget(self.roleLabel)
@@ -96,7 +95,7 @@ class StaffTab(QWidget):
         self.uniformCol = QVBoxLayout()
         self.sizeCol = QVBoxLayout()
         self.uniformButtons = QHBoxLayout()
-        self.sizesResults = extractTable('tbl_sizes')[0]
+        self.sizesResults = getValidtionTable('tbl_sizes')
         # Button options
         self.finishButton = QPushButton('Finish')
         self.finishButton.clicked.connect(lambda: print('test'))
@@ -169,7 +168,8 @@ class StaffTab(QWidget):
 
     def finishAction(self):
         self.clearStaffForm()
-        self.table.updateTable()
+        callProcedure("call PurchaseUniform(%s, %s, %s, %s, %s, %s, 0)")
+        self.table.updateTable(self.table.rowCount())
 
 
     def backAction(self):
