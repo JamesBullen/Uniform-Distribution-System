@@ -6,6 +6,8 @@ class StaffTab(QWidget):
     def __init__(self):
         super().__init__()
         layout = QVBoxLayout()
+        self.labelDict = {1: None, 2: None, 3: None, 4: None}
+        self.inputDict = {1: None, 2: None, 3: None, 4: None}
 
         # Buttons
         tableButtons = QHBoxLayout()
@@ -117,14 +119,15 @@ class StaffTab(QWidget):
         self.hoursInput.clear()
 
     def generateUniformForm(self, uniforms):
-        if self.uniformCol.children():
-            print('has children')
-        else:
-            print('no children')
+        # Clears layout
+        for i in self.labelDict:
+            if self.labelDict[i]:
+                self.uniformCol.removeWidget(self.labelDict[i])
+                self.sizeCol.removeWidget(self.inputDict[i])
         
-        # Setup for loop
-        self.labelDict = {1:None, 2:None, 3:None, 4:None}
-        self.inputDict = {1:None, 2:None, 3:None, 4:None}
+        # Resets for loop
+        self.labelDict = {1: None, 2: None, 3: None, 4: None}
+        self.inputDict = {1: None, 2: None, 3: None, 4: None}
 
         # Dynamically creates size fields for each uniform type
         for i in range(0, len(uniforms)):
@@ -143,12 +146,13 @@ class StaffTab(QWidget):
     def finishAction(self):
         self.clearStaffForm()
 
-        order = 0+1 # get new order number function here
+        order = callProcedure("call NextOrderNumber", None)[0][0][0]
         staffID = callProcedure("call LastAddedStaff", None)[0][0][0]
-        for i in range(len(self.uniformCol.children())):
-            print(self.inputDict[i].currentText())
-            args = [order, staffID, self.uniformResult[1], self.uniformResult[2], self.inputDict[i].currentText(), self.uniformResult[4]]
-            callProcedure("call PurchaseUniform(%s, %s, %s, %s, %s, %s, 0)", args)
+        for i in self.inputDict:
+            if self.inputDict[i]:
+                print(order, staffID, self.uniformResult[0][i][1], self.uniformResult[0][i][2], self.inputDict[i].currentText(), self.uniformResult[0][i][4])
+                args = [order, staffID, self.uniformResult[0][i][1], self.uniformResult[0][i][2], self.inputDict[i].currentText(), self.uniformResult[0][i][4]]
+                callProcedure("call PurchaseUniform(%s, %s, %s, %s, %s, %s, 0)", args)
 
         self.table.updateTable()
         self.uniformFrame.hide()
