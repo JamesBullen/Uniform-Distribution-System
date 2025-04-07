@@ -90,7 +90,12 @@ end $$
 
 create procedure LastAddedStaff() -- May remove later and directly use the query from the interface. Maybe I could just union this to PurchaseUniform if there's no colour column conflict this way
 begin
-select max(staff_id) from tbl_staff;
+select max(staff_id)+1 from tbl_staff;
+end $$
+
+create procedure NextOrderNumber()
+begin
+select max(order_number) from tbl_orders;
 end $$
 
 create procedure PurchaseUniform(in orderInput int, in staffInput int, in itemInput int, in colourInput int, in sizeInput varchar(3), in quantityInput int, in boughtInput bool) -- Adds uniform item to orders table
