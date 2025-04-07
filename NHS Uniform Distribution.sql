@@ -118,6 +118,16 @@ join tbl_roles as r on s.role_id = r.role_id
 where staff_id >= rowsInput
 order by staff_id;
 end $$
+
+create procedure OrderInfo(in rowsInput int)
+begin
+select order_number as 'Order', fullname as 'Full Name', item_name as 'Uniform', colour as 'Colour', size as 'Size', quantity as 'Quantity', order_date as 'Ordered On', reissue_date as 'Reissue Date'
+from tbl_orders as o
+join tbl_staff as s on o.staff_id = s.staff_id
+join tbl_colours as c on o.colour_id = c.colour_id
+where order_id >= rowsInput
+order by order_id;
+end $$
 delimiter ;
 
 -- Table Insertion
