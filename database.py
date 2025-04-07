@@ -85,7 +85,10 @@ def callProcedure(query, args):
         connection = openConnection()
         # Open cursor and runs fetch query
         cursor = connection.cursor()
-        cursor.execute(query, args if isinstance(args, list) else (args,))
+        if not args:
+            cursor.execute(query)
+        else:
+            cursor.execute(query, args if isinstance(args, list) else (args,))
         result = cursor.fetchall()
         
         # Gets headers for columns
