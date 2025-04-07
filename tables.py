@@ -5,21 +5,22 @@ class Tables(QWidget):
     def __init__(self, procedure, args):
         super().__init__()
         layout = QVBoxLayout()
+        self.procedure = procedure
 
-        results = self.getData(procedure, args)
+        results = self.getData(args)
         self.table = QTableWidget()
         self.table.setColumnCount(len(results[1]))
         self.table.setHorizontalHeaderLabels(results[1])
-        self.updateTable(results[0])
+        self.setTable(results[0])
 
         layout.addWidget(self.table)
         self.setLayout(layout)
     
-    def getData(self, procedure, args):
-        results =  callProcedure(procedure, args)
+    def getData(self, args):
+        results =  callProcedure(self.procedure, args)
         return results
     
-    def updateTable(self, rows):
+    def setTable(self, rows):
         # O(n^2), find better solution in future
         for r in rows:
             rowPosition = self.table.rowCount()
@@ -27,6 +28,10 @@ class Tables(QWidget):
 
             for i in range(0, len(r)):
                 self.table.setItem(rowPosition, i, QTableWidgetItem(str(r[i])))
+    
+    def updateTable(self):
+        newRows = self.getData(self.table.rowCount() +1)[0]
+        self.setTable(newRows)
 
 class StaffTab(QWidget):
     def __init__(self):
@@ -98,7 +103,7 @@ class StaffTab(QWidget):
         self.sizesResults = getValidtionTable('tbl_sizes')
         # Button options
         self.finishButton = QPushButton('Finish')
-        self.finishButton.clicked.connect(lambda: print('test'))
+        self.finishButton.clicked.connect(self.finishAction)
         self.backButton = QPushButton('Back')
         self.backButton.clicked.connect(self.backAction)
         self.uniformButtons.addWidget(self.finishButton)
@@ -128,9 +133,9 @@ class StaffTab(QWidget):
             QMessageBox.warning(self, 'Missing values', "All fields must be filled correctly")
             return
         
-        result = callProcedure("call AddNewStaff(%s, %s, %s, %s)", staffFields)
+        self.uniformResult = callProcedure("call AddNewStaff(%s, %s, %s, %s)", staffFields)
         self.staffFrame.hide()
-        self.generateUniformForm(result[0])
+        self.generateUniformForm(self.uniformResult[0])
     
     def cancelAction(self):
         self.staffFrame.hide()
@@ -149,27 +154,35 @@ class StaffTab(QWidget):
             print('no children')
         
         # Setup for loop
-        labelDict = {1:None, 2:None, 3:None, 4:None}
-        inputDict = {1:None, 2:None, 3:None, 4:None}
+        self.labelDict = {1:None, 2:None, 3:None, 4:None}
+        self.inputDict = {1:None, 2:None, 3:None, 4:None}
 
         # Dynamically creates size fields for each uniform type
         for i in range(0, len(uniforms)):
-            labelDict[i] = QLabel()
-            labelDict[i].setText(uniforms[i][0])
-            self.uniformCol.addWidget(labelDict[i])
+            self.labelDict[i] = QLabel()
+            self.labelDict[i].setText(uniforms[i][0])
+            self.uniformCol.addWidget(self.labelDict[i])
 
             sizeOptions = self.sizesResults[uniforms[i][3]][1]
 
-            inputDict[i] = QComboBox()
-            inputDict[i].addItems(sizeOptions.split(','))
-            self.sizeCol.addWidget(inputDict[i])
+            self.inputDict[i] = QComboBox()
+            self.inputDict[i].addItems(sizeOptions.split(','))
+            self.sizeCol.addWidget(self.inputDict[i])
 
         self.uniformFrame.show()
 
     def finishAction(self):
         self.clearStaffForm()
-        callProcedure("call PurchaseUniform(%s, %s, %s, %s, %s, %s, 0)")
-        self.table.updateTable(self.table.rowCount())
+
+        order = 0+1 # get new order number function here
+        staffID = callProcedure("call LastAddedStaff", None)[0][0][0]
+        for i in range(len(self.uniformCol.children())):
+            print(self.inputDict[i].currentText())
+            args = [order, staffID, self.uniformResult[1], self.uniformResult[2], self.inputDict[i].currentText(), self.uniformResult[4]]
+            callProcedure("call PurchaseUniform(%s, %s, %s, %s, %s, %s, 0)", args)
+
+        self.table.updateTable()
+        self.uniformFrame.hide()
 
 
     def backAction(self):
