@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import QWidget, QGridLayout, QVBoxLayout, QHBoxLayout, QLineEdit, QLabel, QPushButton, QComboBox, QMessageBox, QFrame
-from tables import Tables
 from database import getValidtionTable, callProcedure
+from tables import Tables
 
 class StaffTab(QWidget):
     def __init__(self):
@@ -150,7 +150,6 @@ class StaffTab(QWidget):
         staffID = callProcedure("call LastAddedStaff", None)[0][0][0]
         for i in self.inputDict:
             if self.inputDict[i]:
-                print(order, staffID, self.uniformResult[0][i][1], self.uniformResult[0][i][2], self.inputDict[i].currentText(), self.uniformResult[0][i][4])
                 args = [order, staffID, self.uniformResult[0][i][1], self.uniformResult[0][i][2], self.inputDict[i].currentText(), self.uniformResult[0][i][4]]
                 callProcedure("call PurchaseUniform(%s, %s, %s, %s, %s, %s, 0)", args)
 
