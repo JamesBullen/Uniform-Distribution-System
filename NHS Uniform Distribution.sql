@@ -125,10 +125,12 @@ select order_number as 'Order', fullname as 'Full Name', item_name as 'Uniform',
 from tbl_orders as o
 join tbl_staff as s on o.staff_id = s.staff_id
 join tbl_colours as c on o.colour_id = c.colour_id
+join tbl_uniforms as u on o.item_id = u.item_id
 where order_id >= rowsInput
 order by order_id;
 end $$
 delimiter ;
+
 
 -- Table Insertion
 insert into tbl_roles(role_name) values
