@@ -2,7 +2,7 @@ import sys
 from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QTableWidget, QTabWidget, QVBoxLayout, QLineEdit, QLabel, QPushButton, QCheckBox, QMessageBox
 from PyQt6.QtCore import QSize
 from PyQt6.QtGui import QIcon
-from database import openConnection, createPool, extractTable
+from database import createPool, loadValidtionTables
 from tabs import StaffTab, ReportsTab, OrdersTab
 
 # Sets up the main window
@@ -15,6 +15,9 @@ class MainWindow(QMainWindow):
         layout = QVBoxLayout(mainWidget)
         mainWidget.setLayout(layout)
         self.setCentralWidget(mainWidget)
+
+        # Loads validation tables from database
+        loadValidtionTables()
 
         # Staff tab
         self.staffTab = StaffTab()
@@ -53,9 +56,6 @@ connectionPool = createPool()
 if not connectionPool:
     # Close program if can't connect
     sys.exit(1)
-
-def getConnection():
-    return connectionPool.get_connection()
 
 if __name__ == '__main__':
     app = QApplication([])
