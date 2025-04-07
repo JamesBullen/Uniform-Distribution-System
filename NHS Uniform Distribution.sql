@@ -107,10 +107,13 @@ end $$
 
 create procedure StaffInfo(in rowsInput int) -- Returns only the relevant data when displayign staff in GUI
 begin
-select fullname as 'Full Name', role_id as 'Role', hours as 'Hours' from tbl_staff where staff_id >= rowsInput;
+select fullname as 'Full Name', role_name as 'Role', hours as 'Hours'
+from tbl_staff as s
+join tbl_roles as r on s.role_id = r.role_id
+where staff_id >= rowsInput;
 end $$
 delimiter ;
-
+call StaffInfo(1)
 -- Table Insertion
 insert into tbl_roles(role_name) values
 ('Doctor'),
