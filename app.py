@@ -10,7 +10,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowIcon(QIcon("assets/favicon.png"))
-        self.setWindowTitle("Uniform Distribution System")
+        self.setWindowTitle("Uniform Distribution")
         mainWidget = QWidget()
         layout = QVBoxLayout(mainWidget)
         mainWidget.setLayout(layout)
