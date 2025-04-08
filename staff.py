@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QWidget, QGridLayout, QVBoxLayout, QHBoxLayout, QLineEdit, QLabel, QPushButton, QComboBox, QMessageBox, QFrame
+from PyQt6.QtWidgets import QWidget, QGridLayout, QFormLayout, QVBoxLayout, QHBoxLayout, QLineEdit, QLabel, QPushButton, QComboBox, QMessageBox, QFrame
 from database import getValidtionTable, callProcedure
 from table import Table
 
@@ -22,73 +22,45 @@ class StaffTab(QWidget):
         self.table = Table("call StaffInfo(%s)", 1)
         layout.addWidget(self.table)
 
-        #* Staff input form
-        self.staffLayout = QGridLayout()
+        # Staff input form
+        self.staffLayout = QFormLayout()
         self.staffFrame = QFrame()
-        labelCol = QVBoxLayout()
-        inputCol = QVBoxLayout()
-        staffButtons = QHBoxLayout()
         # Name row
-        self.nameLabel = QLabel(self)
-        self.nameLabel.setText('Full Name:')
         self.nameInput = QLineEdit(self)
-        labelCol.addWidget(self.nameLabel)
-        inputCol.addWidget(self.nameInput)
+        self.staffLayout.addRow(self.tr('Full Name:'), self.nameInput)
         # Sex row
-        self.sexLabel = QLabel(self)
-        self.sexLabel.setText('Sex:')
         self.sexInput = QComboBox(self)
         self.sexInput.addItems(['Male','Female'])
         self.sexInput.setCurrentIndex(-1)
-        labelCol.addWidget(self.sexLabel)
-        inputCol.addWidget(self.sexInput)
+        self.staffLayout.addRow(self.tr('Sex:'), self.sexInput)
         # Role row
-        self.roleLabel = QLabel(self)
-        self.roleLabel.setText('Role:')
         self.roleInput = QComboBox(self)
         roleResults = getValidtionTable('tbl_roles')
         self.roleInput.addItems([i[1] for i in roleResults])
         self.roleInput.setCurrentIndex(-1)
-        labelCol.addWidget(self.roleLabel)
-        inputCol.addWidget(self.roleInput)
+        self.staffLayout.addRow(self.tr('Role:'), self.roleInput)
         # Hours row
-        self.hoursLabel = QLabel(self)
-        self.hoursLabel.setText('Hours:')
         self.hoursInput = QLineEdit(self)
-        labelCol.addWidget(self.hoursLabel)
-        inputCol.addWidget(self.hoursInput)
+        self.staffLayout.addRow(self.tr('Hours:'), self.hoursInput)
         # Buttons
         self.nextButton = QPushButton('Next')
         self.nextButton.clicked.connect(self.nextAction)
         self.cancelButton = QPushButton('Cancel')
         self.cancelButton.clicked.connect(self.cancelAction)
-        staffButtons.addWidget(self.nextButton)
-        staffButtons.addWidget(self.cancelButton)
+        self.staffLayout.addRow(self.nextButton, self.cancelButton)
+        self.staffFrame.setLayout(self.staffLayout)
 
-        #* Size form
-        self.uniformLayout = QGridLayout()
+        # Size form
+        self.uniformLayout = QFormLayout()
         self.uniformFrame = QFrame()
-        self.uniformCol = QVBoxLayout()
-        self.sizeCol = QVBoxLayout()
-        self.uniformButtons = QHBoxLayout()
         self.sizesResults = getValidtionTable('tbl_sizes')
         # Button options
         self.finishButton = QPushButton('Finish')
         self.finishButton.clicked.connect(self.finishAction)
         self.backButton = QPushButton('Back')
         self.backButton.clicked.connect(self.backAction)
-        self.uniformButtons.addWidget(self.finishButton)
-        self.uniformButtons.addWidget(self.backButton)
         # Add everything to layout
-        self.uniformLayout.addLayout(self.uniformCol, 0, 0)
-        self.uniformLayout.addLayout(self.sizeCol, 0, 1)
-        self.uniformLayout.addLayout(self.uniformButtons, 1, 0, 1, 2)
         self.uniformFrame.setLayout(self.uniformLayout)
-
-        self.staffLayout.addLayout(labelCol, 0, 0)
-        self.staffLayout.addLayout(inputCol, 0, 1)
-        self.staffLayout.addLayout(staffButtons, 1, 0, 1, 2)
-        self.staffFrame.setLayout(self.staffLayout)
 
         self.setLayout(layout)
 
@@ -114,10 +86,9 @@ class StaffTab(QWidget):
 
     def generateForm(self, uniforms):
         # Clears layout
-        for i in self.labelDict:
-            if self.labelDict[i]:
-                self.uniformCol.removeWidget(self.labelDict[i])
-                self.sizeCol.removeWidget(self.inputDict[i])
+        if self.labelDict[1]:
+            for i in range(4):
+                self.uniformLayout.removeRow(self.labelDict[i])
         
         # Resets for loop
         self.labelDict = {1: None, 2: None, 3: None, 4: None}
@@ -127,14 +98,14 @@ class StaffTab(QWidget):
         for i in range(0, len(uniforms)):
             self.labelDict[i] = QLabel()
             self.labelDict[i].setText(uniforms[i][0])
-            self.uniformCol.addWidget(self.labelDict[i])
 
             sizeOptions = self.sizesResults[uniforms[i][3]-1][1]
 
             self.inputDict[i] = QComboBox()
             self.inputDict[i].addItems(sizeOptions.split(','))
-            self.sizeCol.addWidget(self.inputDict[i])
+            self.uniformLayout.addRow(self.labelDict[i], self.inputDict[i])
 
+        self.uniformLayout.addRow(self.finishButton, self.backButton)
         self.uniformFrame.show()
 
     def finishAction(self):
