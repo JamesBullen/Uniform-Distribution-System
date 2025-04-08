@@ -1,4 +1,6 @@
 from PyQt6.QtWidgets import QWidget, QGridLayout, QFormLayout, QVBoxLayout, QHBoxLayout, QLineEdit, QLabel, QPushButton, QComboBox, QMessageBox, QFrame
+from PyQt6.QtGui import QIntValidator, QValidator, QRegularExpressionValidator
+from PyQt6.QtCore import QRegularExpression
 from database import getValidtionTable, callProcedure
 from table import Table
 
@@ -27,6 +29,8 @@ class StaffTab(QWidget):
         self.staffFrame = QFrame()
         # Name row
         self.nameInput = QLineEdit(self)
+        regexValidator = QRegularExpressionValidator(QRegularExpression("[A-Z a-z '-]{0,40}"), self)
+        self.nameInput.setValidator(regexValidator)
         self.staffLayout.addRow(self.tr('Full Name:'), self.nameInput)
         # Sex row
         self.sexInput = QComboBox(self)
@@ -41,6 +45,8 @@ class StaffTab(QWidget):
         self.staffLayout.addRow(self.tr('Role:'), self.roleInput)
         # Hours row
         self.hoursInput = QLineEdit(self)
+        hoursValidation = QIntValidator(1, 80, self)
+        self.hoursInput.setValidator(hoursValidation)
         self.staffLayout.addRow(self.tr('Hours:'), self.hoursInput)
         # Buttons
         self.nextButton = QPushButton('Next')
