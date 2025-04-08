@@ -28,42 +28,30 @@ class OrdersTab(QWidget):
         layout.addLayout(tableButtons)
 
         # Staff selection form
-        self.selectionLayout = QGridLayout()
+        self.selectionLayout = QFormLayout()
         self.selectionFrame = QFrame()
-        labelCol = QVBoxLayout()
-        inputCol = QVBoxLayout()
-        staffBut = QHBoxLayout()
         self.staffInput = QComboBox() # Needs to be declared here due to role affecting it
         # Role search
-        roleLabel = QLabel('Role:')
-        labelCol.addWidget(roleLabel)
         self.roleInput = QComboBox()
         roleResults = getValidtionTable('tbl_roles')
         self.roleInput.addItems([i[1] for i in roleResults])
         self.roleInput.setCurrentIndex(-1)
         self.roleInput.currentIndexChanged.connect(lambda: self.loadStaff(self.roleInput.currentIndex()+1))
-        inputCol.addWidget(self.roleInput)
+        self.selectionLayout.addRow(self.tr('Role:'), self.roleInput)
         # Staff search
-        stafflabel = QLabel('Name:')
-        labelCol.addWidget(stafflabel)
-        inputCol.addWidget(self.staffInput)
+        self.selectionLayout.addRow(self.tr('Name:'), self.staffInput)
         # Buttons
         nextBut = QPushButton('Next')
         nextBut.clicked.connect(lambda: print('clicked'))
-        staffBut.addWidget(nextBut)
         cancBut = QPushButton('Cancel')
         cancBut.clicked.connect(lambda: self.selectionFrame.hide())
-        staffBut.addWidget(cancBut)
+        self.selectionLayout.addRow(nextBut, cancBut)
         # Layout
-        self.selectionLayout.addLayout(labelCol, 0, 0)
-        self.selectionLayout.addLayout(inputCol, 0, 1)
-        self.selectionLayout.addLayout(staffBut, 1, 0, 1, 2)
         self.selectionFrame.setLayout(self.selectionLayout)
 
         # Uniform selection
         self.uniformLayout = QFormLayout()
         self.uniformFrame = QFrame()
-        uniformBut = QHBoxLayout()
         # test
         testy = QLineEdit()
         validator = QIntValidator(1, 99, self)
