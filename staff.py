@@ -91,7 +91,7 @@ class StaffTab(QWidget):
                 self.uniformLayout.removeRow(self.labelDict[i])
         
         # Resets for loop
-        self.labelDict = {1: None, 2: None, 3: None, 4: None}
+        self.labelDict = {1: None, 2: None, 3: None, 4: None} # This still needed?
         self.inputDict = {1: None, 2: None, 3: None, 4: None}
 
         # Dynamically creates size fields for each uniform type
