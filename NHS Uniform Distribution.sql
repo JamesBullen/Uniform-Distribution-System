@@ -129,6 +129,11 @@ join tbl_uniforms as u on o.item_id = u.item_id
 where order_id >= rowsInput
 order by order_id;
 end $$
+
+create procedure FindStaff(in roleInput int)
+begin
+select fullname from tbl_staff where role_id = roleInput;
+end $$
 delimiter ;
 
 
