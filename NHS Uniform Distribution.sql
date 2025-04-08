@@ -81,8 +81,11 @@ delimiter $$
 create procedure AddNewStaff(in fullnameInput varchar(40), in sexInput varchar(1), in roleInput int, in hoursInput int)
 begin
 insert into tbl_staff(fullname, sex, role_id, hours) values (fullnameInput, sexInput, roleInput, hoursInput); -- Adds new staff to table
+end $$
 
-select item_name as 'Uniform', a.item_id, a.colour_id, sizes_id, ceiling(quantity*(hoursinput/40)) -- Returns needed uniform for interface to loop through to create orders
+create procedure AllocatedUniform(in sexInput varchar(1), in roleInput int, in hoursInput int)
+begin
+select item_name as 'Uniform', a.item_id, a.colour_id, sizes_id, ceiling(quantity*(hoursInput/40)) -- Returns needed uniform for interface to loop through to create orders
 from tbl_allocations as a
 join tbl_uniforms as u on a.item_id = u.item_id
 where a.role_id = roleInput and (u.sex = sexInput or u.sex = 'U');
@@ -124,7 +127,7 @@ begin
 select order_number as 'Order', fullname as 'Full Name', item_name as 'Uniform', colour as 'Colour', size as 'Size', quantity as 'Quantity', order_date as 'Ordered On', reissue_date as 'Reissue Date'
 from tbl_orders as o
 join tbl_staff as s on o.staff_id = s.staff_id
-join tbl_colours as c on o.colour_id = c.colour_id
+left join tbl_colours as c on o.colour_id = c.colour_id
 join tbl_uniforms as u on o.item_id = u.item_id
 where order_id >= rowsInput
 order by order_id;
