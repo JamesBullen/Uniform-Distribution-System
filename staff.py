@@ -12,7 +12,7 @@ class StaffTab(QWidget):
         # Buttons
         tableButtons = QHBoxLayout()
         # Add new staffer
-        self.newStaffButton = QPushButton('Add new Staffer', self)
+        self.newStaffButton = QPushButton('Add new staffer', self)
         self.newStaffButton.clicked.connect(self.openStaffForm)
         tableButtons.addWidget(self.newStaffButton)
 
@@ -30,13 +30,13 @@ class StaffTab(QWidget):
         staffButtons = QHBoxLayout()
         # Name row
         self.nameLabel = QLabel(self)
-        self.nameLabel.setText('Fullname')
+        self.nameLabel.setText('Full Name:')
         self.nameInput = QLineEdit(self)
         labelCol.addWidget(self.nameLabel)
         inputCol.addWidget(self.nameInput)
         # Sex row
         self.sexLabel = QLabel(self)
-        self.sexLabel.setText('Sex')
+        self.sexLabel.setText('Sex:')
         self.sexInput = QComboBox(self)
         self.sexInput.addItems(['Male','Female'])
         self.sexInput.setCurrentIndex(-1)
@@ -44,7 +44,7 @@ class StaffTab(QWidget):
         inputCol.addWidget(self.sexInput)
         # Role row
         self.roleLabel = QLabel(self)
-        self.roleLabel.setText('Role')
+        self.roleLabel.setText('Role:')
         self.roleInput = QComboBox(self)
         roleResults = getValidtionTable('tbl_roles')
         self.roleInput.addItems([i[1] for i in roleResults])
@@ -53,7 +53,7 @@ class StaffTab(QWidget):
         inputCol.addWidget(self.roleInput)
         # Hours row
         self.hoursLabel = QLabel(self)
-        self.hoursLabel.setText('Hours')
+        self.hoursLabel.setText('Hours:')
         self.hoursInput = QLineEdit(self)
         labelCol.addWidget(self.hoursLabel)
         inputCol.addWidget(self.hoursInput)
@@ -97,16 +97,10 @@ class StaffTab(QWidget):
         self.staffFrame.show()
     
     def nextAction(self):
-        # validation checks will go hear, will see about a switch case for different validation errors
-        try:
-            staffFields = [self.nameInput.text(), self.sexInput.currentText()[0], self.roleInput.currentIndex()+1, self.hoursInput.text()]
-        except:
-            QMessageBox.warning(self, 'Missing values', "All fields must be filled correctly")
-            return
-        
-        self.uniformResult = callProcedure("call AddNewStaff(%s, %s, %s, %s)", staffFields)
+        uniformFields = [self.sexInput.currentText()[0], self.roleInput.currentIndex()+1, self.hoursInput.text()]
+        self.uniformResult = callProcedure("call AllocatedUniform(%s, %s, %s)", uniformFields)
         self.staffFrame.hide()
-        self.generateUniformForm(self.uniformResult[0])
+        self.generateForm(self.uniformResult[0])
     
     def cancelAction(self):
         self.staffFrame.hide()
@@ -118,7 +112,7 @@ class StaffTab(QWidget):
         self.roleInput.setCurrentIndex(-1)
         self.hoursInput.clear()
 
-    def generateUniformForm(self, uniforms):
+    def generateForm(self, uniforms):
         # Clears layout
         for i in self.labelDict:
             if self.labelDict[i]:
@@ -135,7 +129,7 @@ class StaffTab(QWidget):
             self.labelDict[i].setText(uniforms[i][0])
             self.uniformCol.addWidget(self.labelDict[i])
 
-            sizeOptions = self.sizesResults[uniforms[i][3]][1]
+            sizeOptions = self.sizesResults[uniforms[i][3]-1][1]
 
             self.inputDict[i] = QComboBox()
             self.inputDict[i].addItems(sizeOptions.split(','))
@@ -144,13 +138,24 @@ class StaffTab(QWidget):
         self.uniformFrame.show()
 
     def finishAction(self):
+        # validation checks will go hear, will see about a switch case for different validation errors
+        try:
+            staffFields = [self.nameInput.text(), self.sexInput.currentText()[0], self.roleInput.currentIndex()+1, self.hoursInput.text()]
+        except:
+            QMessageBox.warning(self, 'Missing values', "All fields must be filled correctly")
+            return
+        
+        callProcedure("call AddNewStaff(%s, %s, %s, %s)", staffFields)
+
         self.clearStaffForm()
 
         order = callProcedure("call NextOrderNumber", None)[0][0][0]
         staffID = callProcedure("call LastAddedStaff", None)[0][0][0]
         for i in self.inputDict:
-            if self.inputDict[i]:
+            print(self.labelDict[i])
+            if self.labelDict[i]:
                 args = [order, staffID, self.uniformResult[0][i][1], self.uniformResult[0][i][2], self.inputDict[i].currentText(), self.uniformResult[0][i][4]]
+                print(args)
                 callProcedure("call PurchaseUniform(%s, %s, %s, %s, %s, %s, 0)", args)
 
         self.table.updateTable()
