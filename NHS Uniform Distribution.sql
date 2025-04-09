@@ -135,7 +135,7 @@ end $$
 
 create procedure FindStaff(in roleInput int)
 begin
-select staff_id, fullname from tbl_staff where role_id = roleInput;
+select staff_id, fullname, sex, hours from tbl_staff where role_id = roleInput;
 end $$
 delimiter ;
 
