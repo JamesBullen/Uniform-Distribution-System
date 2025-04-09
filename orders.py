@@ -147,3 +147,5 @@ class OrdersTab(QWidget):
                 args = [orderNum[0][0][0], self.staffResult[self.staffInput.currentIndex()][0], details[1], details[2], self.varDict[i].itemAt(0).widget().currentText(), details[3]]
                 print(args)
                 callProcedure('call PurchaseUniform(%s, %s, %s, %s, %s, %s, 1)', args)
+        
+        self.table.updateTable()
