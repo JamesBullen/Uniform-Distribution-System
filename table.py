@@ -1,17 +1,18 @@
-from PyQt6.QtWidgets import QWidget, QTableWidget, QTableWidgetItem, QVBoxLayout
+from PyQt6.QtWidgets import QWidget, QTableWidget, QTableWidgetItem, QVBoxLayout, QCheckBox
 from database import callProcedure
 
 class Table(QWidget):
-    def __init__(self, procedure, args):
+    def __init__(self, procedure, args, exclude=0, checks=False):
         super().__init__()
         layout = QVBoxLayout()
         self.procedure = procedure
+        self.checks = checks
 
         self.data = self.getData(args)
         self.table = QTableWidget()
-        self.table.setColumnCount(len(self.data[1]))
-        self.table.setHorizontalHeaderLabels(self.data[1])
-        self.setTable(self.data[0])
+        self.table.setColumnCount(len(self.data[1])-exclude if checks == False else len(self.data[1])-exclude+1)
+        self.table.setHorizontalHeaderLabels(self.data[1][exclude:])
+        self.setTable(self.data[0][exclude:])
 
         layout.addWidget(self.table)
         self.setLayout(layout)
@@ -23,11 +24,14 @@ class Table(QWidget):
     def setTable(self, rows):
         # O(n^2), find better solution in future
         for r in rows:
-            rowPosition = self.table.rowCount()
-            self.table.insertRow(rowPosition)
+            rowPos = self.table.rowCount()
+            self.table.insertRow(rowPos)
 
             for i in range(0, len(r)):
-                self.table.setItem(rowPosition, i, QTableWidgetItem(str(r[i])))
+                self.table.setItem(rowPos, i, QTableWidgetItem(str(r[i])))
+            
+            if self.checks:
+                self.table.setItem(rowPos, len(r)+1, QCheckBox())
     
     def updateTable(self):
         rows = self.getData(self.table.rowCount() +1)[0]
