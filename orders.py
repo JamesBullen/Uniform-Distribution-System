@@ -1,5 +1,5 @@
-from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QTableWidget, QTableWidgetItem, QFormLayout, QGridLayout, QVBoxLayout, QHBoxLayout, QLineEdit, QLabel, QPushButton, QComboBox, QMessageBox, QErrorMessage, QFrame, QCheckBox
-from PyQt6.QtGui import QIntValidator
+from PyQt6.QtWidgets import QWidget, QFormLayout, QVBoxLayout, QHBoxLayout, QLineEdit, QPushButton, QComboBox, QFrame, QCheckBox
+from PyQt6.QtGui import QIcon, QIntValidator
 from database import getValidtionTable, callProcedure
 from table import Table
 
@@ -7,8 +7,7 @@ class OrdersTab(QWidget):
     def __init__(self):
         super().__init__()
         layout = QVBoxLayout()
-        self.labelDict = {1: None, 2: None, 3: None, 4: None}
-        self.inputDict = {1: None, 2: None, 3: None, 4: None}
+        self.varDict = {1: None, 2: None, 3: None, 4: None}
 
         # Table
         self.table = Table("call OrderInfo(%s)", 1)
@@ -21,6 +20,7 @@ class OrdersTab(QWidget):
         self.newOrderButton.clicked.connect(self.showSelectionForm)
         tableButtons.addWidget(self.newOrderButton)
         # Available reissues
+        
         # Refresh
         refreshBut = QPushButton('Refresh')
         refreshBut.clicked.connect(self.table.updateTable)
@@ -30,6 +30,8 @@ class OrdersTab(QWidget):
         # Staff selection form
         self.selectionLayout = QFormLayout()
         self.selectionFrame = QFrame()
+        self.selectionFrame.setWindowIcon(QIcon("assets/favicon.png"))
+        self.selectionFrame.setWindowTitle('Staff Select')
         self.staffInput = QComboBox() # Needs to be declared here due to role affecting it
         # Role search
         self.roleInput = QComboBox()
@@ -42,7 +44,7 @@ class OrdersTab(QWidget):
         self.selectionLayout.addRow(self.tr('Name:'), self.staffInput)
         # Buttons
         nextBut = QPushButton('Next')
-        nextBut.clicked.connect(lambda: print('clicked'))
+        nextBut.clicked.connect(self.nextAction)
         cancBut = QPushButton('Cancel')
         cancBut.clicked.connect(lambda: self.selectionFrame.hide())
         self.selectionLayout.addRow(nextBut, cancBut)
@@ -50,36 +52,98 @@ class OrdersTab(QWidget):
         self.selectionFrame.setLayout(self.selectionLayout)
 
         # Uniform selection
-        self.uniformLayout = QFormLayout()
+        self.uniformLayout = QVBoxLayout()
+        self.uniformForm = QFormLayout()
         self.uniformFrame = QFrame()
-        # test
-        testy = QLineEdit()
-        validator = QIntValidator(1, 99, self)
-        testy.setValidator(validator)
+        self.uniformFrame.setWindowIcon(QIcon("assets/favicon.png"))
+        self.uniformFrame.setWindowTitle('Uniform Select')
+        uniformButs = QHBoxLayout()
+        # Buttons
+        self.finBut = QPushButton('Finish')
+        self.finBut.clicked.connect(self.finAction)
+        self.backBut = QPushButton('Back')
+        self.backBut.clicked.connect(self.showSelectionForm)
+        uniformButs.addWidget(self.finBut)
+        uniformButs.addWidget(self.backBut)
         # Layout
+        self.uniformLayout.addLayout(self.uniformForm)
+        self.uniformLayout.addLayout(uniformButs)
         self.uniformFrame.setLayout(self.uniformLayout)
 
         layout.addWidget(self.table)
         self.setLayout(layout)
 
     def showSelectionForm(self):
+        self.uniformFrame.hide()
+        self.selectionFrame.show()
+    
+    def clearSelectionForm(self):
         self.roleInput.setCurrentIndex(-1)
         self.staffInput.clear()
-        self.selectionFrame.show()
-        return
 
     def loadStaff(self, role):
-        staffResult = callProcedure('call FindStaff(%s)', role)[0]
+        self.staffResult = callProcedure('call FindStaff(%s)', role)[0]
 
         self.staffInput.clear()
-        self.staffInput.addItems([f"{i[1]}, ID: {i[0]}" for i in staffResult])
+        self.staffInput.addItems([f"{i[1]}, ID: {i[0]}" for i in self.staffResult])
 
-        if len(staffResult) == 1:
-            self.generateSelection()
+        if len(self.staffResult) == 1:
             return
         
         self.staffInput.setCurrentIndex(-1)
-        return
     
-    def generateSelection(self):
-        ...
+    def nextAction(self):
+        args = [self.staffResult[self.staffInput.currentIndex()][2], self.roleInput.currentIndex()+1, self.staffResult[self.staffInput.currentIndex()][3]]
+        self.uniformResult = callProcedure('call AllocatedUniform(%s, %s, %s)', args)
+        
+        self.generateSelection(self.uniformResult)
+
+    # Displays all uniform that specific staff is allowed to order
+    def generateSelection(self, uniforms):
+        # Clears layout
+        if self.varDict[1]:
+            for i in range(4):
+                row = self.varDict[i]
+                if row:
+                    self.uniformForm.removeRow(row)
+        
+        sizesTable = getValidtionTable('tbl_sizes')
+        for i in range(0, len(uniforms[0])):
+            # Available sizes
+            sizes= QComboBox()
+            sizes.addItems(sizesTable[uniforms[0][i][3]][1].split(','))
+
+            # Quantity wanted
+            quantity = QLineEdit()
+            quantiyValidation = QIntValidator(1, 99, self)
+            quantity.setValidator(quantiyValidation)
+
+            # Checkbox
+            selected = QCheckBox()
+
+            # Test
+            fields = QHBoxLayout()
+            fields.addWidget(sizes)
+            fields.addWidget(quantity)
+            fields.addWidget(selected)
+            fields.widget
+            
+            self.varDict[i] = fields
+            self.uniformForm.addRow(self.tr(f'{uniforms[0][i][0]}:'), fields)
+        
+        self.selectionFrame.hide()
+        self.uniformFrame.show()
+    
+    def finAction(self):
+        self.uniformFrame.hide()
+        #self.clearSelectionForm()
+
+        orderNum = callProcedure('call NextOrderNumber()', None)
+        for i in self.varDict:
+            if not self.varDict[i]:
+                continue
+            if self.varDict[i].itemAt(2).widget().isChecked():
+                details = self.uniformResult[0][i]
+                args = [orderNum[0][0][0], self.staffResult[self.staffInput.currentIndex()][0], details[1], details[2], self.varDict[i].itemAt(0).widget().currentText(), details[3]]
+                print(args)
+                callProcedure('call PurchaseUniform(%s, %s, %s, %s, %s, %s, 1)', args)
