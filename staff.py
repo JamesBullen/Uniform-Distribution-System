@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QWidget, QGridLayout, QFormLayout, QVBoxLayout, QHBoxLayout, QLineEdit, QLabel, QPushButton, QComboBox, QMessageBox, QFrame
-from PyQt6.QtGui import QIntValidator, QValidator, QRegularExpressionValidator
+from PyQt6.QtGui import QIcon, QIntValidator, QValidator, QRegularExpressionValidator
 from PyQt6.QtCore import QRegularExpression
 from database import getValidtionTable, callProcedure
 from table import Table
@@ -12,13 +12,16 @@ class StaffTab(QWidget):
         self.inputDict = {1: None, 2: None, 3: None, 4: None}
 
         # Buttons
-        tableButtons = QHBoxLayout()
+        tableButs = QHBoxLayout()
         # Add new staffer
-        self.newStaffButton = QPushButton('Add new staffer', self)
-        self.newStaffButton.clicked.connect(self.openStaffForm)
-        tableButtons.addWidget(self.newStaffButton)
+        self.newBut = QPushButton('Add staffer')
+        self.newBut.clicked.connect(self.openStaffForm)
+        tableButs.addWidget(self.newBut)
+        # Retire staffer
+        self.retireBut = QPushButton('Retire staffer')
+        tableButs.addWidget(self.retireBut)
 
-        layout.addLayout(tableButtons)
+        layout.addLayout(tableButs)
         
         # Table
         self.table = Table("call StaffInfo(%s)", 1)
@@ -27,9 +30,11 @@ class StaffTab(QWidget):
         # Staff input form
         self.staffLayout = QFormLayout()
         self.staffFrame = QFrame()
+        self.staffFrame.setWindowIcon(QIcon("assets/favicon.png"))
+        self.staffFrame.setWindowTitle('Staff Details')
         # Name row
         self.nameInput = QLineEdit(self)
-        regexValidator = QRegularExpressionValidator(QRegularExpression("[A-Z a-z '-]{0,40}"), self)
+        regexValidator = QRegularExpressionValidator(QRegularExpression("[A-Z a-z '-]{2,40}"), self)
         self.nameInput.setValidator(regexValidator)
         self.staffLayout.addRow(self.tr('Full Name:'), self.nameInput)
         # Sex row
@@ -53,12 +58,17 @@ class StaffTab(QWidget):
         self.nextButton.clicked.connect(self.nextAction)
         self.cancelButton = QPushButton('Cancel')
         self.cancelButton.clicked.connect(self.cancelAction)
-        self.staffLayout.addRow(self.nextButton, self.cancelButton)
+        staffButs = QHBoxLayout()
+        staffButs.addWidget(self.nextButton)
+        staffButs.addWidget(self.cancelButton)
+        self.staffLayout.addRow(self.tr(''), staffButs)
         self.staffFrame.setLayout(self.staffLayout)
 
         # Size form
         self.uniformLayout = QFormLayout()
         self.uniformFrame = QFrame()
+        self.uniformFrame.setWindowIcon(QIcon("assets/favicon.png"))
+        self.uniformFrame.setWindowTitle('Size Selection')
         self.sizesResults = getValidtionTable('tbl_sizes')
         # Button options
         self.finishButton = QPushButton('Finish')
@@ -101,9 +111,8 @@ class StaffTab(QWidget):
         self.inputDict = {1: None, 2: None, 3: None, 4: None}
 
         # Dynamically creates size fields for each uniform type
-        for i in range(0, len(uniforms)):
-            self.labelDict[i] = QLabel()
-            self.labelDict[i].setText(uniforms[i][0])
+        for i in range(0, len(uniforms)): # This could be just a u in uniforms loop
+            self.labelDict[i] = QLabel(uniforms[i][0])
 
             sizeOptions = self.sizesResults[uniforms[i][3]-1][1]
 
