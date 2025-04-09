@@ -48,7 +48,7 @@ def openConnection():
         return None
     
 # Gets all data from a table, to be used extract validation tables that may be updated for dropdowns
-def extractTable( table):
+def extractTable(table):
     global poolConnection
     try:
         # Connects to pool
