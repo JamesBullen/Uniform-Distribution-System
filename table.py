@@ -7,11 +7,11 @@ class Table(QWidget):
         layout = QVBoxLayout()
         self.procedure = procedure
 
-        results = self.getData(args)
+        self.data = self.getData(args)
         self.table = QTableWidget()
-        self.table.setColumnCount(len(results[1]))
-        self.table.setHorizontalHeaderLabels(results[1])
-        self.setTable(results[0])
+        self.table.setColumnCount(len(self.data[1]))
+        self.table.setHorizontalHeaderLabels(self.data[1])
+        self.setTable(self.data[0])
 
         layout.addWidget(self.table)
         self.setLayout(layout)
@@ -30,5 +30,7 @@ class Table(QWidget):
                 self.table.setItem(rowPosition, i, QTableWidgetItem(str(r[i])))
     
     def updateTable(self):
-        newRows = self.getData(self.table.rowCount() +1)[0]
+        rows = self.getData(self.table.rowCount() +1)[0]
+        newRows = [r for r in rows if r not in self.data[0]]
+        
         self.setTable(newRows)
