@@ -79,7 +79,6 @@ class OrdersTab(QWidget):
         self.reissueFrame.setWindowIcon(QIcon("assets/favicon.png"))
         self.reissueFrame.setWindowTitle('Available Reissues')
         self.reissueTable = Table('call AvailableReissues()', None, 3, True)
-        self.reissueLayout.addWidget(self.reissueTable)
         # Buttons
         reissueSelecBut = QPushButton('Reissue Selected')
         reissueSelecBut.clicked.connect(self.reissueUniform)
@@ -91,8 +90,9 @@ class OrdersTab(QWidget):
         self.reissueButs.addWidget(reissueSelecBut)
         self.reissueButs.addWidget(reissueAllBut)
         self.reissueButs.addWidget(cancReissueBut)
-        self.reissueLayout.addLayout(self.reissueButs)
         # Layout
+        self.reissueLayout.addWidget(self.reissueTable)
+        self.reissueLayout.addLayout(self.reissueButs)
         self.reissueFrame.setLayout(self.reissueLayout)
 
         layout.addWidget(self.table)
