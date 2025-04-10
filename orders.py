@@ -76,8 +76,8 @@ class OrdersTab(QWidget):
         self.reissueLayout = QVBoxLayout()
         self.reissueForm = QFormLayout()
         self.reissueFrame = QFrame()
-        self.uniformFrame.setWindowIcon(QIcon("assets/favicon.png"))
-        self.uniformFrame.setWindowTitle('Available Reissues')
+        self.reissueFrame.setWindowIcon(QIcon("assets/favicon.png"))
+        self.reissueFrame.setWindowTitle('Available Reissues')
         self.reissueTable = Table('call AvailableReissues()', None, 3, True)
         self.reissueLayout.addWidget(self.reissueTable)
         # Buttons
