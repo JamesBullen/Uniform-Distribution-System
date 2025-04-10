@@ -101,16 +101,23 @@ begin
 select max(order_number)+1 from tbl_orders;
 end $$
 
-create procedure PurchaseUniform(in orderInput int, in staffInput int, in itemInput int, in colourInput int, in sizeInput varchar(3), in quantityInput int, in boughtInput bool) -- Adds uniform item to orders table
+create procedure PurchaseUniform(in orderInput int, in staffInput int, in itemInput int, in colourInput int, in sizeInput varchar(3), in quantityInput int, in boughtInput bool, in prevOrderInput int) -- Adds uniform item to orders table
 begin
 insert into tbl_orders(order_number, staff_id, item_id, colour_id, size, quantity, bought, order_date, reissue_date) values
 (orderInput, staffInput, itemInput, colourInput, sizeInput, quantityInput, boughtInput, cast(now() as date), if(boughtInput=0, date_add(cast(now() as date), interval 2 year), null));
+if prevOrderInput > 0 then
+update tbl_orders set reissue_date = None where order_id = prevOrderInput;
+end if;
 end $$
 
-create procedure AvaiableReissues() -- Shows uniforms available for reissues, may also remove as may be more efficient to replace id's with there values in the interface rather than joining tables
+create procedure AvailableReissues() -- Shows uniforms available for reissues, may also remove as may be more efficient to replace id's with there values in the interface rather than joining tables
 begin
-select fullname as 'Full Name', item_name as 'Uniform', colour as 'Colour', size as 'Size', reissue_date as 'Reissue Date'
-from tbl_orders where reissue_date >= cast(now() as date);
+select order_id, o.staff_id, o.item_id, order_number as 'Order', fullname as 'Full Name', item_name as 'Uniform', colour as 'Colour', size as 'Size', quantity as 'Quantity'
+from tbl_orders as o
+join tbl_staff as s on o.staff_id = s.staff_id
+join tbl_uniforms as u on o.item_id = u.item_id
+join tbl_colours as c on o.colour_id = c.colour_id
+where reissue_date >= cast(now() as date);
 end $$
 
 create procedure StaffInfo(in rowsInput int) -- Returns only the relevant data when displayign staff in GUI
