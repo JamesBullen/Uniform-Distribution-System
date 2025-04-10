@@ -25,7 +25,7 @@ class OrdersTab(QWidget):
         tableButtons.addWidget(self.availReissueBut)
         # Refresh
         refreshBut = QPushButton('Refresh')
-        refreshBut.clicked.connect(self.table.updateTable)
+        refreshBut.clicked.connect(self.table.refreshTable)
         tableButtons.addWidget(refreshBut)
         layout.addLayout(tableButtons)
 
@@ -172,10 +172,10 @@ class OrdersTab(QWidget):
                 print(args)
                 callProcedure('call PurchaseUniform(%s, %s, %s, %s, %s, %s, 1, 0)', args)
         
-        self.table.updateTable()
+        self.table.refreshTable()
     
     def showReissues(self):
-        #self.reissueTable.clearTable()
+        self.reissueTable.refreshTable()
         
         self.reissueLayout.addLayout(self.reissueButs)
         self.reissueFrame.show()
