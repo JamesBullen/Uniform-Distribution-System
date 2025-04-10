@@ -17,7 +17,7 @@ class Table(QWidget):
             checkHeaders = list(self.data[1][exclude:])
             checkHeaders.append('Select')
         self.table.setHorizontalHeaderLabels(self.data[1][exclude:] if checks == False else checkHeaders)
-        self.setTable(self.data[0][exclude:])
+        self.setTable([i[exclude:] for i in self.data[0]])
 
         layout.addWidget(self.table)
         self.setLayout(layout)
@@ -53,13 +53,21 @@ class Table(QWidget):
         
         results = []
         for row in range(self.table.rowCount()):
-            if self.table.item(row, self.table.columnCount()-1).checkState() == Qt.CheckState.Checked:
-                items = []
-                for col in range(self.table.columnCount() -1):
-                    item = self.table.item(row, col).text()
-                    items.append(item)
-                
-                results.append(items)
+            if self.table.item(row, self.table.columnCount()-1).checkState() == Qt.CheckState.Checked:              
+                results.append(row)
 
-        print(results)
+        # Returns indexes of selected rows
         return results
+    
+    def getRawData(self, indexes=None):
+        if indexes:
+            results = []
+            for index in indexes:
+                results.append(self.data[0][index])
+            
+            return results
+        
+        return self.data[0]
+    
+    def clearTable(self):
+        self.table.setRowCount(0)
