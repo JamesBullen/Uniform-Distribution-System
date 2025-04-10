@@ -16,11 +16,13 @@ class OrdersTab(QWidget):
         tableButtons = QHBoxLayout()
         # New order
         #* select role, brings up all uniforms of that role, then select size and quantity
-        self.newOrderButton = QPushButton('Place an order', self)
+        self.newOrderButton = QPushButton('Place Order', self)
         self.newOrderButton.clicked.connect(self.showSelectionForm)
         tableButtons.addWidget(self.newOrderButton)
         # Available reissues
-        
+        self.availReissueBut = QPushButton('Available Reissues')
+        self.availReissueBut.clicked.connect(self.showReissues)
+        tableButtons.addWidget(self.availReissueBut)
         # Refresh
         refreshBut = QPushButton('Refresh')
         refreshBut.clicked.connect(self.table.updateTable)
@@ -69,6 +71,28 @@ class OrdersTab(QWidget):
         self.uniformLayout.addLayout(self.uniformForm)
         self.uniformLayout.addLayout(uniformButs)
         self.uniformFrame.setLayout(self.uniformLayout)
+
+        # Reissuing selection
+        self.reissueLayout = QVBoxLayout()
+        self.reissueForm = QFormLayout()
+        self.reissueFrame = QFrame()
+        self.uniformFrame.setWindowIcon(QIcon("assets/favicon.png"))
+        self.uniformFrame.setWindowTitle('Available Reissues')
+        self.reissueTable = Table('call AvailableReissues()', None, 3, True)
+        self.reissueLayout.addWidget(self.reissueTable)
+        # Buttons
+        reissueSelecBut = QPushButton('Reissue Selected')
+        reissueSelecBut.clicked.connect(self.reissueUniform)
+        reissueAllBut = QPushButton('Reissue All')
+        reissueAllBut.clicked.connect(self.reissueUniform)
+        cancReissueBut = QPushButton('Cancel')
+        cancReissueBut.clicked.connect(lambda: self.reissueFrame.hide())
+        self.reissueButs = QHBoxLayout()
+        self.reissueButs.addWidget(reissueSelecBut)
+        self.reissueButs.addWidget(reissueAllBut)
+        self.reissueButs.addWidget(cancReissueBut)
+        # Layout
+        self.reissueFrame.setLayout(self.reissueLayout)
 
         layout.addWidget(self.table)
         self.setLayout(layout)
@@ -146,6 +170,27 @@ class OrdersTab(QWidget):
                 details = self.uniformResult[0][i]
                 args = [orderNum[0][0][0], self.staffResult[self.staffInput.currentIndex()][0], details[1], details[2], self.varDict[i].itemAt(0).widget().currentText(), details[3]]
                 print(args)
-                callProcedure('call PurchaseUniform(%s, %s, %s, %s, %s, %s, 1)', args)
+                callProcedure('call PurchaseUniform(%s, %s, %s, %s, %s, %s, 1, 0)', args)
         
         self.table.updateTable()
+    
+    def showReissues(self):
+        #self.reissueTable.clearTable()
+        
+        self.reissueLayout.addLayout(self.reissueButs)
+        self.reissueFrame.show()
+
+    def reissueUniform(self):        
+        uniforms = self.reissueTable.getSelectedRows()
+
+        indexes = self.reissueTable.getSelectedRows()
+        data = self.reissueTable.getRawData(indexes)
+        
+        colours = dict(getValidtionTable('tbl_colours'))
+        orderNum = callProcedure('call NextOrderNumber()')
+
+        for i in range(len(uniforms)):
+            args = [orderNum[0][0][0], data[i][1], data[i][2], list(colours.keys())[list(colours.values()).index(data[i][6])], data[i][7], data[i][8], data[i][0]]
+            callProcedure('call PurchaseUniform(%s, %s, %s, %s, %s, %s, 0, %s)', args)
+        
+        self.reissueFrame.hide()
