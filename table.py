@@ -2,23 +2,18 @@ from PyQt6.QtWidgets import QWidget, QTableWidget, QTableWidgetItem, QVBoxLayout
 from PyQt6.QtCore import Qt
 from database import callProcedure
 
-class Table(QWidget):
+class Table(QTableWidget):
     def __init__(self, procedure, args, exclude=0, checks=False):
         super().__init__()
-        layout = QVBoxLayout()
         self.procedure = procedure
         self.args = args
         self.exclude = exclude
         self.checks = checks
 
         self.data = self.getData(args)
-        self.table = QTableWidget()
-        self.table.setColumnCount(len(self.data[1])-exclude if checks == False else len(self.data[1])-exclude+1)
+        self.setColumnCount(len(self.data[1])-exclude if checks == False else len(self.data[1])-exclude+1)
 
         self.setTable()
-
-        layout.addWidget(self.table)
-        self.setLayout(layout)
     
     def getData(self, args):
         results =  callProcedure(self.procedure, args)
@@ -28,33 +23,33 @@ class Table(QWidget):
         if self.checks:
             checkHeaders = list(self.data[1][self.exclude:])
             checkHeaders.append('Select')
-        self.table.setHorizontalHeaderLabels(self.data[1][self.exclude:] if self.checks == False else checkHeaders)
+        self.setHorizontalHeaderLabels(self.data[1][self.exclude:] if self.checks == False else checkHeaders)
         
         if not rows:
             rows = [i[self.exclude:] for i in self.data[0]]
 
         # O(n^2), find better solution in future
         for r in rows:
-            rowPos = self.table.rowCount()
-            self.table.insertRow(rowPos)
+            rowPos = self.rowCount()
+            self.insertRow(rowPos)
 
             for i in range(0, len(r)):
-                self.table.setItem(rowPos, i, QTableWidgetItem(str(r[i])))
+                self.setItem(rowPos, i, QTableWidgetItem(str(r[i])))
             
             if self.checks:
                 checkbox = QTableWidgetItem()
                 checkbox.setFlags(Qt.ItemFlag.ItemIsUserCheckable | Qt.ItemFlag.ItemIsEnabled)
                 checkbox.setCheckState(Qt.CheckState.Unchecked)
-                self.table.setItem(rowPos, len(r), checkbox)
+                self.setItem(rowPos, len(r), checkbox)
     
     def updateTable(self):
-        rows = self.getData(self.table.rowCount() +1)[0]
+        rows = self.getData(self.rowCount() +1)[0]
         newRows = [r for r in rows if r not in self.data[0]]
         
         self.setTable(newRows)
     
     def refreshTable(self):
-        self.table.setRowCount(0)
+        self.setRowCount(0)
 
         self.data = self.getData(self.args)
         self.setTable()
@@ -64,8 +59,8 @@ class Table(QWidget):
             return
         
         results = []
-        for row in range(self.table.rowCount()):
-            if self.table.item(row, self.table.columnCount()-1).checkState() == Qt.CheckState.Checked:              
+        for row in range(self.rowCount()):
+            if self.item(row, self.columnCount()-1).checkState() == Qt.CheckState.Checked:              
                 results.append(row)
 
         # Returns indexes of selected rows
@@ -82,7 +77,7 @@ class Table(QWidget):
         return self.data[0]
     
     def getRowCount(self):
-        return self.table.rowCount()
+        return self.rowCount()
     
     def clearTable(self):
-        self.table.setRowCount(0)
+        self.setRowCount(0)
