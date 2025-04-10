@@ -162,7 +162,7 @@ class OrdersTab(QWidget):
     def finAction(self):
         self.uniformFrame.hide()
 
-        orderNum = callProcedure('call NextOrderNumber()', None)
+        orderNum = callProcedure('call NextOrderNumber()')
         for i in self.varDict:
             if not self.varDict[i]:
                 continue

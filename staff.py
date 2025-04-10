@@ -136,8 +136,8 @@ class StaffTab(QWidget):
 
         self.clearStaffForm()
 
-        order = callProcedure("call NextOrderNumber", None)[0][0][0]
-        staffID = callProcedure("call LastAddedStaff", None)[0][0][0]
+        order = callProcedure("call NextOrderNumber")[0][0][0]
+        staffID = callProcedure("call LastAddedStaff")[0][0][0]
         for i in self.inputDict:
             print(self.labelDict[i])
             if self.labelDict[i]:
