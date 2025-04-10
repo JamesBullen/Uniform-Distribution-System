@@ -91,6 +91,7 @@ class OrdersTab(QWidget):
         self.reissueButs.addWidget(reissueSelecBut)
         self.reissueButs.addWidget(reissueAllBut)
         self.reissueButs.addWidget(cancReissueBut)
+        self.reissueLayout.addLayout(self.reissueButs)
         # Layout
         self.reissueFrame.setLayout(self.reissueLayout)
 
@@ -160,7 +161,6 @@ class OrdersTab(QWidget):
     
     def finAction(self):
         self.uniformFrame.hide()
-        #self.clearSelectionForm()
 
         orderNum = callProcedure('call NextOrderNumber()', None)
         for i in self.varDict:
@@ -177,7 +177,6 @@ class OrdersTab(QWidget):
     def showReissues(self):
         self.reissueTable.refreshTable()
         
-        self.reissueLayout.addLayout(self.reissueButs)
         self.reissueFrame.show()
 
     def reissueUniform(self):        
