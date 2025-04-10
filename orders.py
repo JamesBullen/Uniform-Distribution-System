@@ -83,7 +83,7 @@ class OrdersTab(QWidget):
         reissueSelecBut = QPushButton('Reissue Selected')
         reissueSelecBut.clicked.connect(self.reissueUniform)
         reissueAllBut = QPushButton('Reissue All')
-        reissueAllBut.clicked.connect(self.reissueUniform)
+        reissueAllBut.clicked.connect(lambda: self.reissueUniform(True))
         cancReissueBut = QPushButton('Cancel')
         cancReissueBut.clicked.connect(lambda: self.reissueFrame.hide())
         self.reissueButs = QHBoxLayout()
@@ -179,16 +179,19 @@ class OrdersTab(QWidget):
         
         self.reissueFrame.show()
 
-    def reissueUniform(self):        
-        uniforms = self.reissueTable.getSelectedRows()
-
-        indexes = self.reissueTable.getSelectedRows()
-        data = self.reissueTable.getRawData(indexes)
+    def reissueUniform(self, all=False):
+        if all:
+            uniforms = self.reissueTable.getRowCount()
+            data = self.reissueTable.getRawData()
+        else:
+            uniforms = self.reissueTable.getSelectedRows()
+            indexes = self.reissueTable.getSelectedRows()
+            data = self.reissueTable.getRawData(indexes)
         
         colours = dict(getValidtionTable('tbl_colours'))
         orderNum = callProcedure('call NextOrderNumber()')
 
-        for i in range(len(uniforms)):
+        for i in range(uniforms if all == True else len(uniforms)):
             args = [orderNum[0][0][0], data[i][1], data[i][2], list(colours.keys())[list(colours.values()).index(data[i][6])], data[i][7], data[i][8], data[i][0]]
             callProcedure('call PurchaseUniform(%s, %s, %s, %s, %s, %s, 0, %s)', args)
         
