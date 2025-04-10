@@ -14,11 +14,12 @@ class StaffTab(QWidget):
         # Buttons
         tableButs = QHBoxLayout()
         # Add new staffer
-        self.newBut = QPushButton('Add staffer')
+        self.newBut = QPushButton('Add Staffer')
         self.newBut.clicked.connect(self.openStaffForm)
         tableButs.addWidget(self.newBut)
         # Retire staffer
-        self.retireBut = QPushButton('Retire staffer')
+        self.retireBut = QPushButton('Retire Staffer')
+        self.retireBut.clicked.connect(lambda: print('clicked'))
         tableButs.addWidget(self.retireBut)
 
         layout.addLayout(tableButs)
@@ -142,7 +143,7 @@ class StaffTab(QWidget):
             if self.labelDict[i]:
                 args = [order, staffID, self.uniformResult[0][i][1], self.uniformResult[0][i][2], self.inputDict[i].currentText(), self.uniformResult[0][i][4]]
                 print(args)
-                callProcedure("call PurchaseUniform(%s, %s, %s, %s, %s, %s, 0)", args)
+                callProcedure("call PurchaseUniform(%s, %s, %s, %s, %s, %s, 0, 0)", args)
 
         self.table.updateTable()
         self.uniformFrame.hide()
