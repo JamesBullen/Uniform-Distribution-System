@@ -3,6 +3,7 @@ from PyQt6.QtGui import QIcon, QIntValidator, QValidator, QRegularExpressionVali
 from PyQt6.QtCore import QRegularExpression
 from database import getValidtionTable, callProcedure
 from table import Table
+from search import StaffSearch
 
 class StaffTab(QWidget):
     def __init__(self):
@@ -19,7 +20,7 @@ class StaffTab(QWidget):
         tableButs.addWidget(self.newBut)
         # Retire staffer
         self.retireBut = QPushButton('Retire Staffer')
-        self.retireBut.clicked.connect(lambda: print('clicked'))
+        self.retireBut.clicked.connect(lambda: self.selecFrame.show())
         tableButs.addWidget(self.retireBut)
 
         layout.addLayout(tableButs)
@@ -78,6 +79,13 @@ class StaffTab(QWidget):
         self.backButton.clicked.connect(self.backAction)
         # Add everything to layout
         self.uniformFrame.setLayout(self.uniformLayout)
+
+        # Staff selection
+        self.staffSelec = StaffSearch('Retire', 'Cancel')
+        self.staffSelec.setFinBut(self.retireAction)
+        self.staffSelec.setCancBut(lambda: self.selecFrame.hide())
+        self.selecFrame = QFrame()
+        self.selecFrame.setLayout(self.staffSelec)
 
         self.setLayout(layout)
 
@@ -148,7 +156,14 @@ class StaffTab(QWidget):
         self.table.updateTable()
         self.uniformFrame.hide()
 
-
     def backAction(self):
         self.uniformFrame.hide()
         self.openStaffForm()
+    
+    def retireAction(self):
+        staff = self.staffSelec.staffSelection()+1
+        
+        callProcedure('call RetireStaff(%s)', staff)
+        self.table.refreshTable()
+
+        self.selecFrame.hide()
