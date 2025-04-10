@@ -81,5 +81,8 @@ class Table(QWidget):
         
         return self.data[0]
     
+    def getRowCount(self):
+        return self.table.rowCount()
+    
     def clearTable(self):
         self.table.setRowCount(0)
