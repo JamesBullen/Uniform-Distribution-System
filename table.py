@@ -7,17 +7,15 @@ class Table(QWidget):
         super().__init__()
         layout = QVBoxLayout()
         self.procedure = procedure
+        self.args = args
+        self.exclude = exclude
         self.checks = checks
 
         self.data = self.getData(args)
         self.table = QTableWidget()
         self.table.setColumnCount(len(self.data[1])-exclude if checks == False else len(self.data[1])-exclude+1)
 
-        if checks:
-            checkHeaders = list(self.data[1][exclude:])
-            checkHeaders.append('Select')
-        self.table.setHorizontalHeaderLabels(self.data[1][exclude:] if checks == False else checkHeaders)
-        self.setTable([i[exclude:] for i in self.data[0]])
+        self.setTable()
 
         layout.addWidget(self.table)
         self.setLayout(layout)
@@ -26,7 +24,15 @@ class Table(QWidget):
         results =  callProcedure(self.procedure, args)
         return results
     
-    def setTable(self, rows):
+    def setTable(self, rows=None):
+        if self.checks:
+            checkHeaders = list(self.data[1][self.exclude:])
+            checkHeaders.append('Select')
+        self.table.setHorizontalHeaderLabels(self.data[1][self.exclude:] if self.checks == False else checkHeaders)
+        
+        if not rows:
+            rows = [i[self.exclude:] for i in self.data[0]]
+
         # O(n^2), find better solution in future
         for r in rows:
             rowPos = self.table.rowCount()
@@ -46,6 +52,12 @@ class Table(QWidget):
         newRows = [r for r in rows if r not in self.data[0]]
         
         self.setTable(newRows)
+    
+    def refreshTable(self):
+        self.table.setRowCount(0)
+
+        self.data = self.getData(self.args)
+        self.setTable()
 
     def getSelectedRows(self):
         if not self.checks:
