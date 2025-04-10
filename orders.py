@@ -31,7 +31,9 @@ class OrdersTab(QWidget):
         layout.addLayout(tableButtons)
 
         # Staff selection form
-        self.selectionForm = StaffSearch(self.nextAction, lambda: self.selectionFrame.hide())
+        self.selectionForm = StaffSearch('Next', 'Cancel')
+        self.selectionForm.setFinBut(self.nextAction)
+        self.selectionForm.setCancBut(lambda: self.selectionFrame.hide())
         self.selectionFrame = QFrame()
         self.selectionFrame.setLayout(self.selectionForm)
 
