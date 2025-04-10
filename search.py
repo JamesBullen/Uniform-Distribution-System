@@ -8,7 +8,7 @@ class Search(QWidget):
         super().__init__()
 
 class StaffSearch(QFormLayout):
-    def __init__(self, finish, cancel):
+    def __init__(self, finLabel, cancLabel):
         super().__init__()
 
         self.staffInput = QComboBox() # Needs to be declared here due to role affecting it
@@ -22,11 +22,9 @@ class StaffSearch(QFormLayout):
         # Staff search
         self.addRow(self.tr('Name:'), self.staffInput)
         # Buttons
-        nextBut = QPushButton('Next')
-        nextBut.clicked.connect(finish)
-        cancBut = QPushButton('Cancel')
-        cancBut.clicked.connect(cancel)
-        self.addRow(nextBut, cancBut)
+        self.nextBut = QPushButton(finLabel)
+        self.cancBut = QPushButton(cancLabel)
+        self.addRow(self.nextBut, self.cancBut)
 
     def loadStaff(self, role):
         self.staffResult = callProcedure('call FindStaff(%s)', role)[0]
@@ -38,6 +36,12 @@ class StaffSearch(QFormLayout):
             return
         
         self.staffInput.setCurrentIndex(-1)
+    
+    def setFinBut(self, finish):
+        self.nextBut.clicked.connect(finish)
+
+    def setCancBut(self, cancel):
+        self.cancBut.clicked.connect(cancel)
 
     def roleSelection(self):
         return self.roleInput.currentIndex()
