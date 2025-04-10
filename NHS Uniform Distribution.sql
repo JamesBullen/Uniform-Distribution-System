@@ -106,7 +106,7 @@ begin
 insert into tbl_orders(order_number, staff_id, item_id, colour_id, size, quantity, bought, order_date, reissue_date) values
 (orderInput, staffInput, itemInput, colourInput, sizeInput, quantityInput, boughtInput, cast(now() as date), if(boughtInput=0, date_add(cast(now() as date), interval 2 year), null));
 if prevOrderInput > 0 then
-update tbl_orders set reissue_date = None where order_id = prevOrderInput;
+update tbl_orders set reissue_date = null where order_id = prevOrderInput;
 end if;
 end $$
 
