@@ -77,7 +77,7 @@ def getValidtionTable(table):
     global tablesDict
     return tablesDict[table]
     
-def callProcedure(query, args):
+def callProcedure(query, args=None):
     global poolConnection
     try:
         # Connect to pool
