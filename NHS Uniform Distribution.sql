@@ -158,13 +158,13 @@ insert into tbl_roles(role_name) values
 ('Receptionist');
 
 insert into tbl_colours(colour) values
-('blue'),
-('pink'),
-('green'),
-('grey'),
-('brown'),
-('lilac'),
-('multicolour');
+('Blue'),
+('Pink'),
+('Green'),
+('Grey'),
+('Brown'),
+('Lilac'),
+('Multicolour');
 
 insert into tbl_sizes(sizes) values
 ('XXS,XS,S,M,L,XL,XXL,3XL,4XL,5XL'),
