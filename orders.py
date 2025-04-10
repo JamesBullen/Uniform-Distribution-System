@@ -31,9 +31,9 @@ class OrdersTab(QWidget):
         layout.addLayout(tableButtons)
 
         # Staff selection form
-        self.testing = StaffSearch(self.nextAction, lambda: self.selectionFrame.hide())
+        self.selectionForm = StaffSearch(self.nextAction, lambda: self.selectionFrame.hide())
         self.selectionFrame = QFrame()
-        self.selectionFrame.setLayout(self.testing)
+        self.selectionFrame.setLayout(self.selectionForm)
 
         # Uniform selection
         self.uniformLayout = QVBoxLayout()
@@ -85,7 +85,7 @@ class OrdersTab(QWidget):
         self.selectionFrame.show()
     
     def nextAction(self):
-        args = [self.testing.getStaffData()[self.testing.staffSelection()][2], self.testing.roleSelection()+1, self.testing.getStaffData()[self.testing.roleSelection()][3]]
+        args = [self.selectionForm.getStaffData()[self.selectionForm.staffSelection()][2], self.selectionForm.roleSelection()+1, self.selectionForm.getStaffData()[self.selectionForm.roleSelection()][3]]
         self.uniformResult = callProcedure('call AllocatedUniform(%s, %s, %s)', args)
         
         self.generateSelection(self.uniformResult)
@@ -113,7 +113,7 @@ class OrdersTab(QWidget):
             # Checkbox
             selected = QCheckBox()
 
-            # Test
+            # Input fields
             fields = QHBoxLayout()
             fields.addWidget(sizes)
             fields.addWidget(quantity)
@@ -136,7 +136,6 @@ class OrdersTab(QWidget):
             if self.varDict[i].itemAt(2).widget().isChecked():
                 details = self.uniformResult[0][i]
                 args = [orderNum[0][0][0], self.selectionFrame.getStaffData()[self.staffInput.currentIndex()][0], details[1], details[2], self.varDict[i].itemAt(0).widget().currentText(), details[3]]
-                print(args)
                 callProcedure('call PurchaseUniform(%s, %s, %s, %s, %s, %s, 1, 0)', args)
         
         self.table.refreshTable()
