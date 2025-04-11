@@ -300,6 +300,9 @@ call StaffStatistics(); -- P18
 
 call AllocationTable(); -- P19
 
+call FindStaff(1); -- P20
+call FindStaff(2);
+
 -- Integridy
 call AddNewStaff('Mister James Robert Bullen of Watford, son of Mister Alistair Michael Bullen of Banham', 'M', 1, 40); -- For I01
 call AddNewStaff('James Bullen', 'Male', 1, 40);
