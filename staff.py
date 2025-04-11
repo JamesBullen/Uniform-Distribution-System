@@ -118,7 +118,7 @@ class StaffTab(QWidget):
                 self.uniformLayout.removeRow(self.labelDict[i])
         
         # Resets for loop
-        self.labelDict = {1: None, 2: None, 3: None, 4: None} # This still needed?
+        self.labelDict = {1: None, 2: None, 3: None, 4: None} # This still needed? Could turn into class and track in a list instead
         self.inputDict = {1: None, 2: None, 3: None, 4: None}
 
         # Dynamically creates size fields for each uniform type
@@ -142,16 +142,15 @@ class StaffTab(QWidget):
             QMessageBox.warning(self, 'Missing values', "All fields must be filled correctly")
             return
         
-        callProcedure("call AddNewStaff(%s, %s, %s, %s)", staffFields)
+        staffID = callProcedure("call AddStaff(%s, %s, %s, %s)", staffFields)[0][0][0]
+        order = callProcedure("call NextOrderNumber")[0][0][0]
 
         self.clearStaffForm()
 
-        order = callProcedure("call NextOrderNumber")[0][0][0]
-        staffID = callProcedure("call LastAddedStaff")[0][0][0]
         for i in self.inputDict:
             print(self.labelDict[i])
             if self.labelDict[i]:
-                args = [order if order == True else 1, staffID, self.uniformResult[0][i][1], self.uniformResult[0][i][2], self.inputDict[i].currentText(), self.uniformResult[0][i][4]]
+                args = [order if order != None else 1, staffID, self.uniformResult[0][i][1], self.uniformResult[0][i][2], self.inputDict[i].currentText(), self.uniformResult[0][i][4]]
                 print(args)
                 callProcedure("call PurchaseUniform(%s, %s, %s, %s, %s, %s, 0, 0)", args)
 

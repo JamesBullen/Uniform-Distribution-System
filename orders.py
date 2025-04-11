@@ -162,7 +162,7 @@ class OrdersTab(QWidget):
         orderNum = callProcedure('call NextOrderNumber()')[0][0][0]
 
         for i in range(uniforms if all == True else len(uniforms)):
-            args = [orderNum if orderNum == True else 1, data[i][1], data[i][2], list(colours.keys())[list(colours.values()).index(data[i][6])], data[i][7], data[i][8], data[i][0]]
+            args = [orderNum if orderNum != None else 1, data[i][1], data[i][2], list(colours.keys())[list(colours.values()).index(data[i][6])], data[i][7], data[i][8], data[i][0]]
             callProcedure('call PurchaseUniform(%s, %s, %s, %s, %s, %s, 0, %s)', args)
         
         self.reissueFrame.hide()
