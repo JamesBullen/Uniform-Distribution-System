@@ -9,16 +9,23 @@ class ReportsTab(QWidget):
         super().__init__()
         layout = QFormLayout()
 
-        test = ReportRow('Staff', 'call StaffInfo(%s)', 1)
-        layout.addRow('Report:', test)
+        mostOrderedItem = ReportRow('Most ordered uniforms', 'call MostOrdered()')
+        layout.addRow('Report:', mostOrderedItem)
+
+        uniformAllocation = ReportRow('Uniform allocation', 'call AllocationTable()')
+        layout.addRow('Info:', uniformAllocation)
+
+        supplierInfo = ReportRow('Supplier detials', 'call SupplierInfo()')
+        layout.addRow('Info:', supplierInfo)
 
         self.setLayout(layout)
 
 class ReportRow(QHBoxLayout):
-    def __init__(self, label, procedure, args=None):
+    def __init__(self, label, procedure, args=None, exclude=0):
         super().__init__()
         self.procedure = procedure
         self.args = args
+        self.exclude = exclude
 
         reportLabel = QLabel(label)
         # Buttons
@@ -46,7 +53,7 @@ class ReportRow(QHBoxLayout):
         # Document setup
         doc = QTextDocument()
         cursor = QTextCursor(doc)
-        baseTable = Table(self.procedure, self.args)
+        baseTable = Table(self.procedure, self.args, self.exclude)
 
         # HTML
         html = ['<table><thead><tr>']
