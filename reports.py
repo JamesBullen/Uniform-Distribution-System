@@ -1,23 +1,24 @@
-from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QFormLayout, QPushButton, QHBoxLayout, QTableWidget, QLabel
-from PyQt6.QtPrintSupport import QPrinter, QPrintDialog, QPrintPreviewDialog
-from PyQt6.QtGui import QTextDocument, QTextCursor, QTextTableFormat, QTextFrameFormat
+from PyQt6.QtWidgets import QWidget, QFormLayout, QPushButton, QHBoxLayout, QLabel
+from PyQt6.QtPrintSupport import QPrintDialog, QPrintPreviewDialog
+from PyQt6.QtGui import QTextDocument, QTextCursor
 from database import getValidtionTable, callProcedure
 from table import Table
-from PyQt6 import QtGui, QtCore
 
 class ReportsTab(QWidget):
     def __init__(self):
         super().__init__()
         layout = QFormLayout()
 
-        test = ReportRow('Staff')
+        test = ReportRow('Staff', 'call StaffInfo(%s)', 1)
         layout.addRow('Report:', test)
 
         self.setLayout(layout)
 
 class ReportRow(QHBoxLayout):
-    def __init__(self, label):
+    def __init__(self, label, procedure, args=None):
         super().__init__()
+        self.procedure = procedure
+        self.args = args
 
         reportLabel = QLabel(label)
         # Buttons
@@ -45,7 +46,7 @@ class ReportRow(QHBoxLayout):
         # Document setup
         doc = QTextDocument()
         cursor = QTextCursor(doc)
-        baseTable = Table('call StaffInfo(%s)', 1)
+        baseTable = Table(self.procedure, self.args)
 
         # HTML
         html = ['<table><thead><tr>']
@@ -57,20 +58,9 @@ class ReportRow(QHBoxLayout):
         for row in range(baseTable.rowCount()):
             html.append('<tr>')
             for col in range(baseTable.columnCount()):
-                print(row, col)
                 html.append(f'<td>{baseTable.item(row, col).text()}</td>')
             html.append('</tr>')
         html.append('</tbody></table>')
 
         docTable = cursor.insertHtml(''.join(html))
-
         doc.print(printer)
-
-# for header in range(baseTable.columnCount()):
-#             cursor.insertText(baseTable.horizontalHeaderItem(header).text())
-#             cursor.movePosition(QTextCursor.MoveOperation.NextCell)
-
-#         for row in range(docTable.rows() -1):
-#             for col in range(docTable.columns()):
-#                 cursor.insertText(baseTable.item(row, col).text())
-#                 cursor.movePosition(QTextCursor.MoveOperation.NextCell)
