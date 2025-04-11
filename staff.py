@@ -160,7 +160,7 @@ class StaffTab(QWidget):
         self.openStaffForm()
     
     def retireAction(self):
-        staff = self.staffSelec.staffSelection()+1
+        staff = self.staffSelec.getStaffData()[self.staffSelec.staffSelection()][0]
         
         callProcedure('call RetireStaff(%s)', staff)
         self.table.refreshTable()
