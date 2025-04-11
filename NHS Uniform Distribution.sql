@@ -144,7 +144,7 @@ end $$
 
 create procedure MostOrdered()
 begin
-select concat(ifnull(colour,''), ' ', item_name) as 'Uniform', supplier_name as 'Supplier', sum(quantity) as 'Quantity'
+select ifnull(concat(colour, ' ', item_name), item_name) as 'Uniform', supplier_name as 'Supplier', sum(quantity) as 'Quantity'
 from tbl_orders as o
 left join tbl_colours as c on o.colour_id = c.colour_id
 join tbl_uniforms as u on o.item_id = u.item_id
