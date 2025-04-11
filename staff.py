@@ -151,7 +151,7 @@ class StaffTab(QWidget):
         for i in self.inputDict:
             print(self.labelDict[i])
             if self.labelDict[i]:
-                args = [order, staffID, self.uniformResult[0][i][1], self.uniformResult[0][i][2], self.inputDict[i].currentText(), self.uniformResult[0][i][4]]
+                args = [order if order == True else 1, staffID, self.uniformResult[0][i][1], self.uniformResult[0][i][2], self.inputDict[i].currentText(), self.uniformResult[0][i][4]]
                 print(args)
                 callProcedure("call PurchaseUniform(%s, %s, %s, %s, %s, %s, 0, 0)", args)
 
