@@ -118,7 +118,7 @@ from tbl_orders as o
 join tbl_staff as s on o.staff_id = s.staff_id
 join tbl_uniforms as u on o.item_id = u.item_id
 join tbl_colours as c on o.colour_id = c.colour_id
-where reissue_date >= cast(now() as date);
+where reissue_date <= cast(now() as date);
 end $$
 
 create procedure StaffInfo(in rowsInput int) -- Returns only the relevant data when displayign staff in GUI
