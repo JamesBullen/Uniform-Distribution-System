@@ -153,6 +153,14 @@ group by item_name, colour, supplier_name
 order by sum(quantity) desc;
 end $$
 
+create procedure StaffStatistics()
+begin
+select role_name as 'Role', count(staff_id) as 'Employed'
+from tbl_staff as s
+join tbl_roles as r on s.role_id = r.role_id
+group by role_name with rollup;
+end $$
+
 create procedure AllocationTable()
 begin
 select role_name as 'Role', ifnull(concat(colour, ' ', item_name), item_name) as 'Uniform', sizes as 'Size Options', quantity as 'Max Quantity', supplier_name as 'Supplier'
