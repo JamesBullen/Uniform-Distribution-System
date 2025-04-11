@@ -64,7 +64,7 @@ class OrdersTab(QWidget):
         self.reissueFrame = QFrame()
         self.reissueFrame.setWindowIcon(QIcon("assets/favicon.png"))
         self.reissueFrame.setWindowTitle('Available Reissues')
-        self.reissueTable = Table('call AvailableReissues()', None, 3, True)
+        self.reissueTable = Table('call AvailableReissues()', None, 4, True)
         # Buttons
         reissueSelecBut = QPushButton('Reissue Selected')
         reissueSelecBut.clicked.connect(self.reissueUniform)
@@ -162,7 +162,7 @@ class OrdersTab(QWidget):
         orderNum = callProcedure('call NextOrderNumber()')[0][0][0]
 
         for i in range(uniforms if all == True else len(uniforms)):
-            args = [orderNum if orderNum != None else 1, data[i][1], data[i][2], list(colours.keys())[list(colours.values()).index(data[i][6])], data[i][7], data[i][8], data[i][0]]
+            args = [orderNum if orderNum != None else 1, data[i][1], data[i][2], data[i][3], data[i][7], data[i][8], data[i][0]]
             callProcedure('call PurchaseUniform(%s, %s, %s, %s, %s, %s, 0, %s)', args)
         
         self.reissueFrame.hide()
