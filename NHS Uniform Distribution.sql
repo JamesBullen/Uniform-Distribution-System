@@ -78,22 +78,23 @@ check (quantity > 0)
 
 -- Procedure Creation
 delimiter $$
-create procedure AddNewStaff(in fullnameInput varchar(40), in sexInput varchar(1), in roleInput int, in hoursInput int)
+create procedure AddStaff(in fullnameInput varchar(40), in sexInput varchar(1), in roleInput int, in hoursInput int)
 begin
 insert into tbl_staff(fullname, sex, role_id, hours) values (fullnameInput, sexInput, roleInput, hoursInput); -- Adds new staff to table
+select max(staff_id) from tbl_staff; -- Returns id of added staff
+end $$
+
+create procedure RetireStaff(in staffInput int)
+begin
+delete from tbl_staff where staff_id = staffInput;
 end $$
 
 create procedure AllocatedUniform(in sexInput varchar(1), in roleInput int, in hoursInput int)
 begin
-select item_name as 'Uniform', a.item_id, a.colour_id, sizes_id, ceiling(quantity*(hoursInput/40)) -- Returns needed uniform for interface to loop through to create orders
+select item_name, a.item_id, a.colour_id, sizes_id, ceiling(quantity*(hoursInput/40)) -- Returns needed uniform for interface to loop through to create orders
 from tbl_allocations as a
 join tbl_uniforms as u on a.item_id = u.item_id
 where a.role_id = roleInput and (u.sex = sexInput or u.sex = 'U');
-end $$
-
-create procedure LastAddedStaff() -- May remove later and directly use the query from the interface. Maybe I could just union this to PurchaseUniform if there's no colour column conflict this way
-begin
-select max(staff_id) from tbl_staff;
 end $$
 
 create procedure NextOrderNumber()
@@ -138,11 +139,6 @@ left join tbl_colours as c on o.colour_id = c.colour_id
 join tbl_uniforms as u on o.item_id = u.item_id
 where order_id >= rowsInput
 order by order_id;
-end $$
-
-create procedure FindStaff(in roleInput int)
-begin
-select staff_id, fullname, sex, hours from tbl_staff where role_id = roleInput;
 end $$
 delimiter ;
 
