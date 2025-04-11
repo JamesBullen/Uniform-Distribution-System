@@ -75,9 +75,3 @@ class Table(QTableWidget):
             return results
         
         return self.data[0]
-    
-    def getRowCount(self):
-        return self.rowCount()
-    
-    def clearTable(self):
-        self.setRowCount(0)

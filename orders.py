@@ -151,7 +151,7 @@ class OrdersTab(QWidget):
 
     def reissueUniform(self, all=False):
         if all:
-            uniforms = self.reissueTable.getRowCount()
+            uniforms = self.reissueTable.rowCount()
             data = self.reissueTable.getRawData()
         else:
             uniforms = self.reissueTable.getSelectedRows()
