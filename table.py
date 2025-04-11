@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QWidget, QTableWidget, QTableWidgetItem, QVBoxLayout
+from PyQt6.QtWidgets import QWidget, QTableWidget, QTableWidgetItem, QVBoxLayout, QAbstractItemView
 from PyQt6.QtCore import Qt
 from database import callProcedure
 
@@ -9,8 +9,11 @@ class Table(QTableWidget):
         self.args = args
         self.exclude = exclude
         self.checks = checks
-
         self.data = self.getData(args)
+
+        self.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)
+        self.verticalHeader().hide()
         self.setColumnCount(len(self.data[1])-exclude if checks == False else len(self.data[1])-exclude+1)
 
         self.setTable()
