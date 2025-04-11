@@ -113,7 +113,7 @@ end $$
 
 create procedure AvailableReissues() -- Shows uniforms available for reissues, may also remove as may be more efficient to replace id's with there values in the interface rather than joining tables
 begin
-select order_id, o.staff_id, o.item_id, order_number as 'Order', fullname as 'Full Name', item_name as 'Uniform', colour as 'Colour', size as 'Size', quantity as 'Quantity'
+select order_id, o.staff_id, o.item_id, order_number as 'Order', fullname as 'Full Name', ifnull(concat(colour, ' ', item_name), item_name) as 'Uniform', size as 'Size', quantity as 'Quantity'
 from tbl_orders as o
 join tbl_staff as s on o.staff_id = s.staff_id
 join tbl_uniforms as u on o.item_id = u.item_id
@@ -132,7 +132,7 @@ end $$
 
 create procedure OrderInfo(in rowsInput int)
 begin
-select order_number as 'Order', fullname as 'Full Name', item_name as 'Uniform', colour as 'Colour', size as 'Size', quantity as 'Quantity', supplier_name as 'Supplier', order_date as 'Ordered On', reissue_date as 'Reissue Date'
+select order_number as 'Order', fullname as 'Full Name', ifnull(concat(colour, ' ', item_name), item_name) as 'Uniform', size as 'Size', quantity as 'Quantity', supplier_name as 'Supplier', order_date as 'Ordered On', reissue_date as 'Reissue Date'
 from tbl_orders as o
 join tbl_staff as s on o.staff_id = s.staff_id
 left join tbl_colours as c on o.colour_id = c.colour_id
