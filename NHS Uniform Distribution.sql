@@ -113,12 +113,12 @@ end $$
 
 create procedure AvailableReissues() -- Shows uniforms available for reissues, may also remove as may be more efficient to replace id's with there values in the interface rather than joining tables
 begin
-select order_id, o.staff_id, o.item_id, order_number as 'Order', fullname as 'Full Name', ifnull(concat(colour, ' ', item_name), item_name) as 'Uniform', size as 'Size', quantity as 'Quantity'
+select order_id, o.staff_id, o.item_id, o.colour_id, order_number as 'Order', fullname as 'Full Name', ifnull(concat(colour, ' ', item_name), item_name) as 'Uniform', size as 'Size', quantity as 'Quantity'
 from tbl_orders as o
 join tbl_staff as s on o.staff_id = s.staff_id
 join tbl_uniforms as u on o.item_id = u.item_id
-join tbl_colours as c on o.colour_id = c.colour_id
-where reissue_date <= cast(now() as date);
+left join tbl_colours as c on o.colour_id = c.colour_id
+where reissue_date <= cast(now() as date) and bought = 0;
 end $$
 
 create procedure StaffInfo(in rowsInput int) -- Returns only the relevant data when displayign staff in GUI
@@ -239,7 +239,9 @@ insert into tbl_allocations(role_id, item_id, colour_id, quantity) values
 
 
 -- Test Cases
-select * from tbl_roles; -- For S01, S02, S03, & S04
+
+-- Procedures
+select * from tbl_roles; -- For S01, S02, S03, S04, S05, S06
 select * from tbl_colours;
 select * from tbl_sizes;
 select * from tbl_suppliers;
@@ -248,15 +250,52 @@ select * from tbl_allocations;
 select * from tbl_staff;
 select * from tbl_orders;
 
-call AddNewStaff('James Bullen', 'M', 1, 40); -- For P01, & P04
+call AddNewStaff('James Bullen', 'M', 1, 40); -- For P01, P04, P09
 call AddNewStaff('Matilda Carboni', 'F', 6, 8);
 
 call LastAddedStaff(); -- For P02, & P05
 
-call PurchaseUniform(1, 1, 1, null, 'XS', 3, 0); -- For P03, P06, & P07
+call PurchaseUniform(1, 1, 1, null, 'XS', 3, 0); -- For P03, P06, P07
 call PurchaseUniform(2, 1, 1, null, 'XS', 3, 1);
 select * from tbl_orders where order_id = (select max(order_id) from tbl_orders);
 
+truncate table tbl_orders; -- P08, P11
+call AvailableReissues();
+insert into tbl_orders(order_number, staff_id, item_id, colour_id, size, quantity, bought, order_date, reissue_date) values (1, 1, 2, 1, 'S', 1, 0, '2000-12-12', '2002-12-12');
+insert into tbl_orders(order_number, staff_id, item_id, colour_id, size, quantity, bought, order_date, reissue_date) values (1, 1, 1, null, 'S', 1, 0, '2000-12-12', '2030-12-12');
+
+call AddStaff('James Bullen', 'M', 1, 40); -- For P09
+call AddStaff('Matilda Carboni', 'F', 6, 8);
+
+call PurchaseUniform(1, 1, 1, null, 'XS', 3, 0, 0); -- For P10
+call PurchaseUniform(2, 1, 1, null, 'XS', 3, 1, 0);
+call PurchaseUniform(2, 1, 1, null, 'XS', 3, 1, 1);
+select * from tbl_orders where order_id = (select max(order_id) from tbl_orders);
+
+call RetireStaff(2); -- P12
+select * from tbl_staff;
+
+call AllocatedUniform('M', 1, 40); -- P13
+call AllocatedUniform('F', 1, 40);
+call AllocatedUniform('M', 2, 40);
+call AllocatedUniform('M', 2, 8);
+
+call nextOrderNumber(); -- P14
+
+call AddStaff('Matilda Carboni', 'F', 6, 8); -- P15
+call StaffInfo(1);
+call StaffInfo(2);
+
+call OrderInfo(1); -- P16
+call OrderInfo(2);
+
+call MostOrdered(); -- P17
+
+call StaffStatistics(); -- P18
+
+call AllocationTable(); -- P19
+
+-- Integridy
 call AddNewStaff('Mister James Robert Bullen of Watford, son of Mister Alistair Michael Bullen of Banham', 'M', 1, 40); -- For I01
 call AddNewStaff('James Bullen', 'Male', 1, 40);
 call AddNewStaff('James Bullen', 'M', 100, 40);
