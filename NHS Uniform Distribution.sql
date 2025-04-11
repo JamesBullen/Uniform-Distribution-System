@@ -132,13 +132,43 @@ end $$
 
 create procedure OrderInfo(in rowsInput int)
 begin
-select order_number as 'Order', fullname as 'Full Name', item_name as 'Uniform', colour as 'Colour', size as 'Size', quantity as 'Quantity', order_date as 'Ordered On', reissue_date as 'Reissue Date'
+select order_number as 'Order', fullname as 'Full Name', item_name as 'Uniform', colour as 'Colour', size as 'Size', quantity as 'Quantity', supplier_name as 'Supplier', order_date as 'Ordered On', reissue_date as 'Reissue Date'
 from tbl_orders as o
 join tbl_staff as s on o.staff_id = s.staff_id
 left join tbl_colours as c on o.colour_id = c.colour_id
 join tbl_uniforms as u on o.item_id = u.item_id
+join tbl_suppliers as su on u.supplier_id = su.supplier_id
 where order_id >= rowsInput
 order by order_id;
+end $$
+
+create procedure MostOrdered()
+begin
+select concat(ifnull(colour,''), ' ', item_name) as 'Uniform', supplier_name as 'Supplier', sum(quantity) as 'Quantity'
+from tbl_orders as o
+left join tbl_colours as c on o.colour_id = c.colour_id
+join tbl_uniforms as u on o.item_id = u.item_id
+join tbl_suppliers as s on u.supplier_id = s.supplier_id
+group by item_name, colour, supplier_name
+order by sum(quantity) desc;
+end $$
+
+create procedure AllocationTable()
+begin
+select role_name as 'Role', ifnull(concat(colour, ' ', item_name), item_name) as 'Uniform', sizes as 'Size Options', quantity as 'Max Quantity', supplier_name as 'Supplier'
+from tbl_allocations as a
+join tbl_roles as r on a.role_id = r.role_id
+join tbl_uniforms as u on a.item_id = u.item_id
+left join tbl_colours as c on a.colour_id = c.colour_id
+join tbl_sizes as s on u.sizes_id = s.sizes_id
+join tbl_suppliers as su on u.supplier_id = su.supplier_id
+order by role_name;
+end $$
+
+create procedure SupplierInfo()
+begin
+select supplier_name as 'Supplier', address as 'Address', phone as 'Phone', email as 'Email'
+from tbl_suppliers;
 end $$
 delimiter ;
 
