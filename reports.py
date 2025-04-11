@@ -12,7 +12,7 @@ class ReportsTab(QWidget):
         mostOrderedItem = ReportRow('Most ordered uniforms', 'call MostOrdered()')
         layout.addRow('Report:', mostOrderedItem)
 
-        staffStatistics = ReportRow('Staff statistics', 'call StaffStatistics()')
+        staffStatistics = ReportRow('Staff employed', 'call StaffStatistics()')
         layout.addRow('Report:', staffStatistics)
 
         uniformAllocation = ReportRow('Uniform allocation', 'call AllocationTable()')
