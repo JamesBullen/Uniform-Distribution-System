@@ -35,6 +35,8 @@ class OrdersTab(QWidget):
         self.selectionForm.setFinBut(self.nextAction)
         self.selectionForm.setCancBut(lambda: self.selectionFrame.hide())
         self.selectionFrame = QFrame()
+        self.selectionFrame.setWindowIcon(QIcon("assets/favicon.png"))
+        self.selectionFrame.setWindowTitle('Staff Select')
         self.selectionFrame.setLayout(self.selectionForm)
 
         # Uniform selection
