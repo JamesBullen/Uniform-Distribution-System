@@ -85,6 +85,8 @@ class StaffTab(QWidget):
         self.staffSelec.setFinBut(self.retireAction)
         self.staffSelec.setCancBut(lambda: self.selecFrame.hide())
         self.selecFrame = QFrame()
+        self.selecFrame.setWindowIcon(QIcon("assets/favicon.png"))
+        self.selecFrame.setWindowTitle('Staff Select')
         self.selecFrame.setLayout(self.staffSelec)
 
         self.setLayout(layout)
