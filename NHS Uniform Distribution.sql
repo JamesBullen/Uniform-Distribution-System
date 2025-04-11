@@ -102,6 +102,11 @@ begin
 select max(order_number)+1 from tbl_orders;
 end $$
 
+create procedure FindStaff(in roleInput int)
+begin
+select staff_id, fullname, sex, hours from tbl_staff where role_id = roleInput;
+end $$
+
 create procedure PurchaseUniform(in orderInput int, in staffInput int, in itemInput int, in colourInput int, in sizeInput varchar(3), in quantityInput int, in boughtInput bool, in prevOrderInput int) -- Adds uniform item to orders table
 begin
 insert into tbl_orders(order_number, staff_id, item_id, colour_id, size, quantity, bought, order_date, reissue_date) values
