@@ -6,6 +6,8 @@ Proof of concept database with Qt user interface
 ## Installation
 ### Dependencies
 -PyQt6
+-MySQL Connector
+-dotenv
 
 ## Authors
 -James Bullen
