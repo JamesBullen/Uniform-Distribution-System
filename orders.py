@@ -133,13 +133,13 @@ class OrdersTab(QWidget):
     def finAction(self):
         self.uniformFrame.hide()
 
-        orderNum = callProcedure('call NextOrderNumber()')
+        orderNum = callProcedure('call NextOrderNumber()')[0][0][0]
         for i in self.varDict:
             if not self.varDict[i]:
                 continue
             if self.varDict[i].itemAt(2).widget().isChecked():
                 details = self.uniformResult[0][i]
-                args = [orderNum[0][0][0], self.selectionFrame.getStaffData()[self.staffInput.currentIndex()][0], details[1], details[2], self.varDict[i].itemAt(0).widget().currentText(), details[3]]
+                args = [orderNum if orderNum != None else 1, self.selectionForm.getStaffData()[self.selectionForm.staffSelection()][0], details[1], details[2], self.varDict[i].itemAt(0).widget().currentText(), details[3]]
                 callProcedure('call PurchaseUniform(%s, %s, %s, %s, %s, %s, 1, 0)', args)
         
         self.table.refreshTable()
