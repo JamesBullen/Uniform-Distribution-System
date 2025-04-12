@@ -166,3 +166,4 @@ class OrdersTab(QWidget):
             callProcedure('call PurchaseUniform(%s, %s, %s, %s, %s, %s, 0, %s)', args)
         
         self.reissueFrame.hide()
+        self.table.refreshTable()
