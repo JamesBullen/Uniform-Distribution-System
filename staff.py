@@ -97,7 +97,7 @@ class StaffTab(QWidget):
     
     def nextAction(self):
         if not self.nameInput.text() or not self.sexInput.currentText() or not self.roleInput.currentText() or not self.hoursInput.text():
-            QMessageBox.information(None, 'Missing Fields', 'Please select a valid staff member')
+            QMessageBox.information(None, 'Missing Fields', 'Please fill all fields')
             return
         
         uniformFields = [self.sexInput.currentText()[0], self.roleInput.currentIndex()+1, self.hoursInput.text()]
