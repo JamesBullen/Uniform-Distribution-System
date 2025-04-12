@@ -160,6 +160,9 @@ class StaffTab(QWidget):
         self.openStaffForm()
     
     def retireAction(self):
+        if not self.staffSelec.checkValdiation():
+            return
+        
         staff = self.staffSelec.getStaffData()[self.staffSelec.staffSelection()][0]
         
         callProcedure('call RetireStaff(%s)', staff)

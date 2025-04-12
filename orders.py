@@ -89,6 +89,9 @@ class OrdersTab(QWidget):
         self.selectionFrame.show()
     
     def nextAction(self):
+        if not self.selectionForm.checkValdiation():
+            return
+        
         args = [self.selectionForm.getStaffData()[self.selectionForm.staffSelection()][2], self.selectionForm.roleSelection()+1, self.selectionForm.getStaffData()[self.selectionForm.staffSelection()][3]]
         self.uniformResult = callProcedure('call AllocatedUniform(%s, %s, %s)', args)
         

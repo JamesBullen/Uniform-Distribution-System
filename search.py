@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import  QWidget, QFormLayout, QPushButton, QComboBox
+from PyQt6.QtWidgets import  QWidget, QFormLayout, QPushButton, QComboBox, QMessageBox
 from PyQt6.QtGui import QIcon
 from database import callProcedure, getValidtionTable
 
@@ -51,3 +51,9 @@ class StaffSearch(QFormLayout):
     
     def getStaffData(self):
         return self.staffResult
+    
+    def checkValdiation(self):
+        if self.roleSelection() or self.staffSelection() == -1:
+            QMessageBox.information(None, 'Missing Fields', 'Please select a valid staff member')
+            return False
+        return True
