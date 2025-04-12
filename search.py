@@ -53,7 +53,7 @@ class StaffSearch(QFormLayout):
         return self.staffResult
     
     def checkValdiation(self):
-        if self.roleSelection() or self.staffSelection() == -1:
+        if not self.roleInput.currentText() or not self.staffInput.currentText():
             QMessageBox.information(None, 'Missing Fields', 'Please select a valid staff member')
             return False
         return True
