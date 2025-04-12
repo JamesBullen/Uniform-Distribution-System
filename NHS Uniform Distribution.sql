@@ -104,7 +104,8 @@ end $$
 
 create procedure FindStaff(in roleInput int)
 begin
-select staff_id, fullname, sex, hours from tbl_staff where role_id = roleInput;
+select staff_id, fullname, sex, hours from tbl_staff
+where role_id = roleInput;
 end $$
 
 create procedure PurchaseUniform(in orderInput int, in staffInput int, in itemInput int, in colourInput int, in sizeInput varchar(3), in quantityInput int, in boughtInput bool, in prevOrderInput int) -- Adds uniform item to orders table
@@ -264,7 +265,7 @@ call PurchaseUniform(1, 1, 1, null, 'XS', 3, 0); -- For P03, P06, P07
 call PurchaseUniform(2, 1, 1, null, 'XS', 3, 1);
 select * from tbl_orders where order_id = (select max(order_id) from tbl_orders);
 
-truncate table tbl_orders; -- P08, P11
+truncate table tbl_orders; -- P08, P11, P20
 call AvailableReissues();
 insert into tbl_orders(order_number, staff_id, item_id, colour_id, size, quantity, bought, order_date, reissue_date) values (1, 1, 2, 1, 'S', 1, 0, '2000-12-12', '2002-12-12');
 insert into tbl_orders(order_number, staff_id, item_id, colour_id, size, quantity, bought, order_date, reissue_date) values (1, 1, 1, null, 'S', 1, 0, '2000-12-12', '2030-12-12');
@@ -277,7 +278,7 @@ call PurchaseUniform(2, 1, 1, null, 'XS', 3, 1, 0);
 call PurchaseUniform(2, 1, 1, null, 'XS', 3, 1, 1);
 select * from tbl_orders where order_id = (select max(order_id) from tbl_orders);
 
-call RetireStaff(2); -- P12
+call RetireStaff(9); -- P12
 select * from tbl_staff;
 
 call AllocatedUniform('M', 1, 40); -- P13
@@ -300,7 +301,8 @@ call StaffStatistics(); -- P18
 
 call AllocationTable(); -- P19
 
-call FindStaff(1); -- P20
+call FindStaff(1); -- P21
+call AddStaff('Nurse', 'F', 2, 16);
 call FindStaff(2);
 
 -- Integridy
@@ -356,3 +358,60 @@ call PurchaseUniform(1, 1, 1, 1, null, 3, 0);
 call PurchaseUniform(1, 1, 1, 1, 'XS', null, 0);
 call PurchaseUniform(1, 1, 1, 1, 'XS', 3, null);
 call PurchaseUniform(1, 1, 1, 1, 'Hi', 3, 0);
+
+call AddStaff('Mister James Robert Bullen of Watford, son of Mister Alistair Michael Bullen of Banham', 'M', 1, 40); -- I03
+call AddStaff('James Bullen', 'Male', 1, 40);
+call AddStaff('James Bullen', 'M', 100, 40);
+call AddStaff(1, 'M', 1, 40);
+call AddStaff('James Bullen', 1, 1, 40);
+call AddStaff('James Bullen', 'M', 'one', 40);
+call AddStaff('James Bullen', 'M', 1, 'forty');
+call AddStaff(null, 'M', 1, 40);
+call AddStaff('James Bullen', null, 1, 40);
+call AddStaff('James Bullen', 'M', null, 40);
+call AddStaff('James Bullen', 'M', 1, null);
+
+call RetireStaff(10); -- I04
+call RetireStaff('one');
+call RetireStaff(null);
+
+call AllocatedUniform('Male', 1, 40); -- I05
+call AllocatedUniform('M', 100, 40);
+call AllocatedUniform('M', 'one', 40);
+call AllocatedUniform('M', 1, 'forty');
+call AllocatedUniform(null, 1, 40);
+call AllocatedUniform('M', null, 40);
+call AllocatedUniform('M', 1, null);
+
+call FindStaff(100); -- I06
+call FindStaff('one');
+call FindStaff(null);
+
+call PurchaseUniform(1, 10, 2, 1, 'XS', 1, 0, 0); -- For I07
+call PurchaseUniform(1, 1, 20, 1, 'XS', 1, 0, 0);
+call PurchaseUniform(1, 1, 2, 100, 'XS', 1, 0, 0);
+call PurchaseUniform(1, 1, 2, 1, 'XXXS', 1, 0, 0);
+call PurchaseUniform(1, 1, 2, 1, 'XS', 1, 3, 0);
+call PurchaseUniform(1, 1, 2, 1, 'XS', 1, 0, 10);
+call PurchaseUniform('one', 1, 2, 1, 'XS', 1, 0, 0);
+call PurchaseUniform(1, 'one', 2, 1, 'XS', 1, 0, 0);
+call PurchaseUniform(1, 1, 'two', 1, 'XS', 1, 0, 0);
+call PurchaseUniform(1, 1, 2, 1, 1, 1, 0, 0);
+call PurchaseUniform(1, 1, 2, 1, 'XS', 'one', 0, 0);
+call PurchaseUniform(1, 1, 2, 1, 'XS', 1, 'zero', 0);
+call PurchaseUniform(1, 1, 2, 1, 'XS', 1, 0, 'zero');
+call PurchaseUniform(null, 1, 2, 1, 'XS', 1, 0, 0);
+call PurchaseUniform(1, null, 2, 1, 'XS', 1, 0, 0);
+call PurchaseUniform(1, 1, null, 1, 'XS', 1, 0, 0);
+call PurchaseUniform(1, 1, 2, 1, null, 1, 0, 0);
+call PurchaseUniform(1, 1, 2, 1, 'XS', null, 0, 0);
+call PurchaseUniform(1, 1, 2, 1, 'XS', 1, null, 0);
+call PurchaseUniform(1, 1, 2, 1, 'XS', 1, 0, null);
+
+call StaffInfo(10); -- I08
+call StaffInfo('one');
+call StaffInfo(null);
+
+call OrderInfo(10);  -- I09
+call OrderInfo('one');
+call OrderInfo(null);
