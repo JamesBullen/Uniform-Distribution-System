@@ -1,7 +1,6 @@
 from PyQt6.QtWidgets import QWidget, QFormLayout, QPushButton, QHBoxLayout, QLabel
 from PyQt6.QtPrintSupport import QPrintDialog, QPrintPreviewDialog
 from PyQt6.QtGui import QTextDocument, QTextCursor
-from database import getValidtionTable, callProcedure
 from table import Table
 
 class ReportsTab(QWidget):

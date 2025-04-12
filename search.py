@@ -1,5 +1,4 @@
 from PyQt6.QtWidgets import  QWidget, QFormLayout, QPushButton, QComboBox, QMessageBox
-from PyQt6.QtGui import QIcon
 from database import callProcedure, getValidtionTable
 
 # search widget class go here

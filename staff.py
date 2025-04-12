@@ -1,5 +1,5 @@
-from PyQt6.QtWidgets import QWidget, QGridLayout, QFormLayout, QVBoxLayout, QHBoxLayout, QLineEdit, QLabel, QPushButton, QComboBox, QMessageBox, QFrame
-from PyQt6.QtGui import QIcon, QIntValidator, QValidator, QRegularExpressionValidator
+from PyQt6.QtWidgets import QWidget, QFormLayout, QVBoxLayout, QHBoxLayout, QLineEdit, QLabel, QPushButton, QComboBox, QMessageBox, QFrame
+from PyQt6.QtGui import QIcon, QIntValidator, QRegularExpressionValidator
 from PyQt6.QtCore import QRegularExpression
 from database import getValidtionTable, callProcedure
 from table import Table

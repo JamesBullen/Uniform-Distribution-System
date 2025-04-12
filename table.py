@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QWidget, QTableWidget, QTableWidgetItem, QVBoxLayout, QAbstractItemView
+from PyQt6.QtWidgets import QWidget, QTableWidget, QTableWidgetItem, QAbstractItemView
 from PyQt6.QtCore import Qt
 from database import callProcedure
 
