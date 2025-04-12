@@ -10,6 +10,10 @@ Proof of concept database with Qt user interface
 - dotenv
 
 ## Authors
--James Bullen
+- James Bullen
 
 ## Acknowledgements
+- East Sussex College for concept and sample data
+- Steven Conway for review
+- BugBytes for PyQT tutorials
+- Premkumar V. for outlining tests for databases
