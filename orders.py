@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QWidget, QFormLayout, QVBoxLayout, QHBoxLayout, QLineEdit, QPushButton, QComboBox, QFrame, QCheckBox
+from PyQt6.QtWidgets import QWidget, QFormLayout, QVBoxLayout, QHBoxLayout, QLineEdit, QPushButton, QComboBox, QFrame, QCheckBox, QMessageBox
 from PyQt6.QtGui import QIcon, QIntValidator
 from database import getValidtionTable, callProcedure
 from table import Table
@@ -134,6 +134,14 @@ class OrdersTab(QWidget):
         self.uniformFrame.show()
     
     def finAction(self):
+        print(self.varDict[0].itemAt(1).widget().text())
+        for i in self.varDict:
+            if not self.varDict[i]:
+                continue
+            if self.varDict[i].itemAt(2).widget().isChecked() and not self.varDict[i].itemAt(1).widget().text():
+                QMessageBox.information(None, 'Missing Fields', 'Please enter a quantity')
+                return
+
         self.uniformFrame.hide()
 
         orderNum = callProcedure('call NextOrderNumber()')[0][0][0]
