@@ -1,5 +1,5 @@
 # Uniform Distribution System
-Proof of concept database with Qt user interface.
+Proof of concept database with PyQt interface.
 
 ## About
 
@@ -18,9 +18,9 @@ Proof of concept database with Qt user interface.
 2 Run the table and insertion queries in 'Uniform Distribution Queries' to create the database
 3 Fill in SQL server config in a new .env file as follows:
 ```
-SERVER_HOST =
-SERVER_USER =
-SERVER_PASSWORD =
+SERVER_HOST = ''
+SERVER_USER = ''
+SERVER_PASSWORD = ''
 ```
 
 ### Executing Program
