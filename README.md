@@ -17,9 +17,11 @@ Proof of concept database with Qt user interface.
 1 Download and place base folder/project where desired.
 2 Run the table and insertion queries in 'Uniform Distribution Queries' to create the database
 3 Fill in SQL server config in a new .env file as follows:
-```SERVER_HOST =
+```
+SERVER_HOST =
 SERVER_USER =
-SERVER_PASSWORD =```
+SERVER_PASSWORD =
+```
 
 ### Executing Program
 Command: python [Pathfile if not in base folder]app.py
