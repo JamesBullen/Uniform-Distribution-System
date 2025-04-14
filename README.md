@@ -3,6 +3,7 @@ Proof of concept database with Qt user interface.
 
 ## About
 
+
 ## Installation
 ### Dependencies
 - PyQt6
@@ -13,10 +14,15 @@ Proof of concept database with Qt user interface.
 - Faker
 
 ### Installing
-Download and place base folder/project where desired.
+1 Download and place base folder/project where desired.
+2 Run the table and insertion queries in 'Uniform Distribution Queries' to create the database
+3 Fill in SQL server config in a new .env file as follows:
+```SERVER_HOST =
+SERVER_USER =
+SERVER_PASSWORD =```
 
 ### Executing Program
-python [Pathfile if not in base folder]app.py
+Command: python [Pathfile if not in base folder]app.py
 
 ## Authors
 - James Bullen
