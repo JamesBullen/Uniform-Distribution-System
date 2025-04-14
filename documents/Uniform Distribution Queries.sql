@@ -415,3 +415,22 @@ call StaffInfo(null);
 call OrderInfo(10);  -- I09
 call OrderInfo('one');
 call OrderInfo(null);
+
+
+-- Fetch
+set profiling = 1;
+show profiles;
+call AddStaff('James Bullen', 'M', 1, 40);
+call RetireStaff(500);
+call AllocatedUniform('M', 1, 40);
+call NextOrderNumber();
+call FindStaff(rand()*(7-1)+1);
+call PurchaseUniform(1, 1, 2, 1, 'XS', 3, 0, 0);
+call PurchaseUniform(1, 1, 2, 1, 'XS', 3, 0, rand()*(100-1)+1);
+call AvailableReissues();
+call StaffInfo(1);
+call OrderInfo(1);
+call MostOrdered();
+call StaffStatistics();
+call AllocationTable();
+call SupplierInfo();
